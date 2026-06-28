@@ -89,7 +89,7 @@ def lkf_add(name: str, category: str, content: str, description: str = "") -> st
         content: Contenido en Markdown con código de ejemplo
         description: Descripción en una línea de lo que cubre
     """
-    valid = ["patterns", "modules", "conventions", "examples"]
+    valid = ["patterns", "modules", "conventions", "examples", "schemas"]
     if category not in valid:
         return f"Categoría inválida '{category}'. Debe ser una de: {', '.join(valid)}"
 
