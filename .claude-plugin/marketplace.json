@@ -1,0 +1,19 @@
+{
+  "name": "lkf-claude",
+  "owner": {
+    "name": "Linkaform",
+    "url": "https://github.com/linkaform"
+  },
+  "metadata": {
+    "description": "Conocimiento, skills y MCP server para desarrollar con linkaform_sdk usando Claude Code",
+    "version": "1.0.0",
+    "repository": "https://github.com/linkaform/lkf-claude"
+  },
+  "plugins": [
+    {
+      "name": "lkf-claude",
+      "description": "Skills (/lkf, /lkf-module, /lkf-learn, /lkf-review), MCP server lkf-knowledge y knowledge base de patrones, convenciones y schemas para trabajar con linkaform_sdk",
+      "source": "./"
+    }
+  ]
+}

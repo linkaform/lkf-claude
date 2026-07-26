@@ -6,7 +6,7 @@
 
 ```
 infosync_answers_client_<id>
-# ejemplo: infosync_answers_client_15667
+# ejemplo: infosync_answers_client_<client_id>
 ```
 
 - MongoDB versión: **6.0.26**
@@ -43,10 +43,10 @@ Dos estados posibles según si el proceso terminó o no.
 {
   "_id": "ObjectId",
   "status": "running",
-  "user_id": 15667,
+  "user_id": "<user_id>",
   "traceback": "Logs en proceso",
   "is_public": false,
-  "script_id": 124698,
+  "script_id": "<script_id>",
   "start_date": "ISODate"
 }
 ```
@@ -57,13 +57,13 @@ Dos estados posibles según si el proceso terminó o no.
   "_id": "ObjectId",
   "start_date": "ISODate",
   "end_date": "ISODate",
-  "script_id": 121939,
+  "script_id": "<script_id>",
   "is_public": false,
   "status": "done",
   "error_mail_sent": false,
-  "user_id": 15667,
+  "user_id": "<user_id>",
   "run_in_wf": true,
-  "traceback": "https://f001.backblazeb2.com/file/app-linkaform/public-client-15667/scripts/logs/<nombre>_<timestamp>.log",
+  "traceback": "https://f001.backblazeb2.com/file/app-linkaform/public-client-<client_id>/scripts/logs/<nombre>_<timestamp>.log",
   "duration": 5,
   "run_success": true
 }
@@ -87,8 +87,8 @@ Un documento por ejecución de regla de workflow sobre un registro:
   "_id": "ObjectId",
   "created_at": "ISODate",
   "email_responses": [],
-  "folio": "1-15667",
-  "form_id": 120156,
+  "folio": "1-<client_id>",
+  "form_id": "<form_id>",
   "name": "nombre del workflow",
   "record_id": "ObjectId",
   "record_request_id": "ObjectId",
@@ -105,7 +105,7 @@ Un documento por ejecución de regla de workflow sobre un registro:
   "workflow_request_content": "<JSON string — payload enviado al destino>",
   "workflow_response_content": "<JSON string — respuesta del destino>",
   "workflow_sucess": true,
-  "workflow_catalog_id": 120148,
+  "workflow_catalog_id": "<catalog_form_id>",
   "catalog_answer_id": "<ObjectId string del registro en el catálogo destino>"
 }
 ```
@@ -126,7 +126,7 @@ Un documento por `form_id` con todos sus workflows configurados:
 ```json
 {
   "_id": "ObjectId",
-  "form_id": 120135,
+  "form_id": "<form_id>",
   "workflows": [
     {
       "id": "ObjectId",

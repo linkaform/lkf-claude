@@ -1,3 +1,8 @@
+---
+name: lkf
+description: Activa el modo de desarrollo LinkaForm SDK — consulta el MCP server lkf-knowledge antes de escribir código y aplica las reglas fundamentales del SDK. Usar cuando el usuario quiera desarrollar, programar o trabajar con linkaform_sdk / lkf_addons.
+---
+
 Activa el modo de desarrollo LinkaForm SDK. A partir de ahora:
 
 1. **Antes de escribir cualquier código**, consulta el MCP server `lkf-knowledge`:

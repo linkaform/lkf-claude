@@ -64,7 +64,7 @@ params = {
     'api_key': Param(default='<apikey>', schema={'type': 'string'}),
 }
 
-with DAG(dag_id='dag_15667_124698_0xxxx_...', ..., params=params) as dag:
+with DAG(dag_id='dag_<account_id>_<sub_id>_<schedule>_<hash>', ..., params=params) as dag:
     do_run_lkf_login_{sub_id}_1 = LKFLogin(
         name='LKF Login',
         task_id='run_lkf_login_{sub_id}_1',
@@ -72,14 +72,14 @@ with DAG(dag_id='dag_15667_124698_0xxxx_...', ..., params=params) as dag:
     do_run_{task_name}_{sub_id}_2 = LKFRunScript(
         name='Nombre tarea',
         task_id='run_{task_name}_{sub_id}_2',
-        params={'script_id': 124698},
+        params={'script_id': '<script_id>'},
     )
 
 do_run_lkf_login_{sub_id}_1.set_downstream(do_run_{task_name}_{sub_id}_2)
 ```
 
 **Convención de task_id:** `run_{task_name_snake}_{subscription_id}_{idx}`  
-Ejemplo: `run_sync_de_oracle_124698_2`
+Ejemplo: `run_sync_de_oracle_<sub_id>_2`
 
 ## Debugging en Docker Swarm
 
@@ -92,14 +92,14 @@ Ejemplo: `run_sync_de_oracle_124698_2`
 ```bash
 docker exec -it af_airflow-worker.1.<id> bash
 # Logs en Airflow 2.x:
-cd '/opt/airflow/logs/dag_id=dag_15667_124698_0xxxx_.../run_id=manual__.../
-cat 'task_id=run_sync_de_oracle_124698_2/attempt=1.log'
+cd '/opt/airflow/logs/dag_id=dag_<account_id>_<sub_id>_<schedule>_<hash>/run_id=manual__.../
+cat 'task_id=run_sync_de_oracle_<sub_id>_2/attempt=1.log'
 ```
 
 **Probar task sin scheduler:**
 ```bash
 docker exec -it af_airflow-worker.1.<id> bash
-airflow tasks test dag_15667_124698_0xxxx_... run_sync_de_oracle_124698_2 2026-06-28
+airflow tasks test dag_<account_id>_<sub_id>_<schedule>_<hash> run_sync_de_oracle_<sub_id>_2 2026-06-28
 ```
 
 **Aplicar cambio en plugin sin rebuild:**

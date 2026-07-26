@@ -1,0 +1,13 @@
+services:
+  claude-code:
+    build: .
+    image: lkf-claude-code:latest
+    container_name: lkf-claude-code
+    volumes:
+      - ${LKF_HOST_PATH:-~/lkf}:/workspace
+      - ${HOME}/.claude:/home/node/.claude
+      - ${HOME}/.claude.json:/home/node/.claude.json
+      - /tmp:/tmp
+    working_dir: /workspace
+    stdin_open: true
+    tty: true

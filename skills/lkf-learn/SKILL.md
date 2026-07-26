@@ -1,3 +1,8 @@
+---
+name: lkf-learn
+description: Captura y guarda un nuevo patrón/aprendizaje del LinkaForm SDK en la knowledge base compartida. Usar cuando el usuario diga "aprende esto", "guarda este patrón", o quiera documentar una convención nueva del SDK.
+---
+
 Captura un nuevo aprendizaje del LinkaForm SDK y lo guarda en la base de conocimiento compartida.
 
 **Qué aprender**: $ARGUMENTS
@@ -27,7 +32,7 @@ Sigue este proceso:
 
 6. Al confirmar, usa `lkf_add(name, category, content, description)` para guardarlo.
 
-7. Recuérdalo de hacer commit:
+7. Recuérdale de hacer commit:
    ```
    git add knowledge/
    git commit -m "knowledge: agrega patrón <nombre>"

@@ -1,3 +1,8 @@
+---
+name: lkf-review
+description: Revisa código del LinkaForm SDK contra convenciones y anti-patrones. Usar cuando el usuario pida revisar, auditar o validar código de linkaform_sdk / lkf_addons.
+---
+
 Revisa código de LinkaForm SDK contra convenciones y anti-patrones.
 
 **Archivo o código a revisar**: $ARGUMENTS

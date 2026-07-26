@@ -1,3 +1,8 @@
+---
+name: lkf-module
+description: Scaffolding de un módulo nuevo del LinkaForm SDK con la estructura correcta. Usar cuando el usuario pida crear/scaffoldear un módulo nuevo de linkaform_sdk / lkf_addons.
+---
+
 Crea un nuevo módulo de LinkaForm SDK con la estructura correcta.
 
 **Nombre del módulo**: $ARGUMENTS
