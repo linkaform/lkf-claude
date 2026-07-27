@@ -4,10 +4,13 @@ services:
     image: lkf-claude-code:latest
     container_name: lkf-claude-code
     volumes:
-      - ${LKF_HOST_PATH:-~/lkf}:/workspace
+      - ${LKF_HOST_PATH:-$HOME/lkf}:${LKF_HOST_PATH:-$HOME/lkf}
       - ${HOME}/.claude:/home/node/.claude
       - ${HOME}/.claude.json:/home/node/.claude.json
       - /tmp:/tmp
-    working_dir: /workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    group_add:
+      - "${DOCKER_GID:-999}"
+    working_dir: ${LKF_HOST_PATH:-$HOME/lkf}
     stdin_open: true
     tty: true

@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-RUN apk add --no-cache git bash ca-certificates curl python3 py3-pip
+RUN apk add --no-cache git bash ca-certificates curl python3 py3-pip docker-cli docker-cli-compose
 
 RUN pip install --no-cache-dir --break-system-packages "fastmcp>=2.0.0"
 

@@ -47,14 +47,26 @@ Ver `CLAUDE.md` para el detalle completo.
 ## Entorno de desarrollo con Docker
 
 `docker/claude-code/` levanta un contenedor con Claude Code ya instalado,
-montando tus repos locales de LinkaForm como `/workspace`:
+montando tus repos locales de LinkaForm en el **mismo path absoluto** que
+tienen en el host (no en `/workspace`) — así Claude Code encuentra el
+historial de sesiones existente, que se indexa por el path absoluto del
+directorio de trabajo:
 
 ```bash
 cd docker/claude-code
-cp .env.example .env   # ajusta LKF_HOST_PATH a tu carpeta de repos
+cp .env.example .env
+# ajusta LKF_HOST_PATH a tu carpeta de repos (ruta absoluta, sin "~")
+# ajusta DOCKER_GID al valor real: stat -c '%g' /var/run/docker.sock
 docker compose up -d --build
 docker compose exec claude-code claude
 ```
+
+El socket de Docker del host (`/var/run/docker.sock`) se monta dentro del
+contenedor para poder correr `docker`/`docker compose` desde ahí — necesario
+para trabajar con los contenedores propios del SDK (Mongo, CouchDB,
+lkf-sanic-apps, Airflow, etc.). El contenedor corre como el usuario `node`
+(nunca root) y usa `group_add` con el `DOCKER_GID` del host para que ese
+usuario pueda hablar con el socket sin privilegios extra.
 
 ## Contribuir
 
