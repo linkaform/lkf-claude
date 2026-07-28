@@ -83,6 +83,10 @@ negocio vive en `addons/<modulo>/service.py`.
    cómo distinguir bug real de drift de datos en vivo.
 
 ## Ver también
+- `patterns/sanic_app_service_routes.md` — **leer antes de tocar `app.py`**: en un módulo
+  ya migrado, `app.py` es solo un re-export de `service.py` (la lógica real vive ahí),
+  el orden de resolución de `get_module_class()`, y qué hace falta para migrar un módulo
+  que nunca tuvo blueprint propio (`addons_routes.py`, rebuild de imagen).
 - `conventions/inheritance.md` — traducción composición vs herencia múltiple entre repos.
 - `conventions/anti_patterns.md` — colisión de nombres al portar constantes compartidas,
   y `self.user.get('id')` vs `self.user.get('user_id')`.
