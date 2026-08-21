@@ -6,6 +6,7 @@ services:
     volumes:
       - ${LKF_HOST_PATH:-$HOME/lkf}:${LKF_HOST_PATH:-$HOME/lkf}
       - ${HOME}/.claude:/home/node/.claude
+      - ${HOME}/lkf/lkf-claude-memory:/home/node/lkf/lkf-claude-memory
       - ${HOME}/.claude.json:/home/node/.claude.json
       - /tmp:/tmp
       - /var/run/docker.sock:/var/run/docker.sock
