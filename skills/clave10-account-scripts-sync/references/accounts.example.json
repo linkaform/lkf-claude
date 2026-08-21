@@ -1,0 +1,18 @@
+{
+  "_comment": "Copia este archivo fuera de este paquete (ej. ~/.config/clave10/accounts.json), rellénalo con tus cuentas reales y NUNCA lo subas a git. Los campos openrouter_api_key, couch_user y couch_password son opcionales: omítelos si esa cuenta no los usa.",
+
+  "ejemplo_cuenta": {
+    "username": "usuario@ejemplo.com",
+    "apikey": "FAKE0000000000000000000000000000000000",
+    "account_id": "00000",
+    "openrouter_api_key": "sk-or-v1-FAKE0000000000000000000000000000000000000000000000000000000000",
+    "couch_user": "usuario_couch",
+    "couch_password": "FAKE_couch_password"
+  },
+
+  "otra_cuenta_minima": {
+    "username": "otro@ejemplo.com",
+    "apikey": "FAKE1111111111111111111111111111111111",
+    "account_id": "11111"
+  }
+}
