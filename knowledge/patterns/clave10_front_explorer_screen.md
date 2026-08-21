@@ -262,3 +262,5 @@ las 3 vistas, no solo la tabla:
 
 - `crear_actualizar_area.md` — field-ids y shape de datos del lado backend
   para el módulo de áreas.
+- `clave10_design_system.md` — dónde está el sistema de diseño oficial
+  (colores, tipografía, radios, copy) y cómo aplicarlo en UI nueva.

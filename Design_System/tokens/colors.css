@@ -1,0 +1,59 @@
+:root{
+/* Brand */
+--c10-navy:#192A4E;              /* logo, table headers, high-authority type */
+--c10-navy-code:#1e2d5a;         /* --color-brand as declared in app globals.css */
+--c10-blue:#2F80ED;              /* ÚNICO azul de acción del sistema */
+--c10-blue-hover:#1E6FDB;
+--c10-blue-light:#EFF6FF;
+--c10-blue-button:#2F80ED;       /* alias histórico — mismo valor */
+--c10-blue-login:#2F80ED;        /* consolidado */
+--c10-blue-select:#2F80ED;       /* consolidado */
+
+/* Semantic status */
+--c10-success:#16A34A;--c10-success-bg:#D1FAE5;--c10-success-text:#065F46;
+--c10-warning:#F59E0B;--c10-warning-bg:#FEF3C7;--c10-warning-text:#92400E;
+--c10-process:#2F80ED;--c10-process-bg:#DBEAFE;--c10-process-text:#1E40AF;
+--c10-purple:#8B5CF6;--c10-purple-bg:#EDE9FE;--c10-purple-text:#5B21B6;
+--c10-magenta:#EC4899;--c10-magenta-bg:#FCE7F3;--c10-magenta-text:#9D174D;
+--c10-danger:#DC2626;--c10-danger-bg:#FEF2F2;--c10-danger-text:#B91C1C;
+
+/* Chip surfaces used by EstatusBadge (Tailwind 50/200/700 triplets) */
+--c10-chip-green-bg:#F0FDF4;--c10-chip-green-bd:#BBF7D0;--c10-chip-green-fg:#15803D;
+--c10-chip-yellow-bg:#FEFCE8;--c10-chip-yellow-bd:#FEF08A;--c10-chip-yellow-fg:#A16207;
+--c10-chip-blue-bg:#EFF6FF;--c10-chip-blue-bd:#BFDBFE;--c10-chip-blue-fg:#1D4ED8;
+--c10-chip-purple-bg:#FAF5FF;--c10-chip-purple-bd:#E9D5FF;--c10-chip-purple-fg:#7E22CE;
+--c10-chip-red-bg:#FEF2F2;--c10-chip-red-bd:#FECACA;--c10-chip-red-fg:#B91C1C;
+--c10-chip-slate-bg:#F8FAFC;--c10-chip-slate-bd:#E2E8F0;--c10-chip-slate-fg:#64748B;
+--c10-chip-amber-bg:#FFFBEB;--c10-chip-amber-bd:#FDE68A;--c10-chip-amber-fg:#B45309;
+
+/* Neutrals */
+--c10-bg-app:#FFFFFF;      /* el lienzo de la aplicación es blanco */
+--c10-surface:#FFFFFF;
+--c10-surface-muted:#F8FAFC;
+--c10-surface-sunken:#F1F5F9;
+--c10-border:#E2E8F0;
+--c10-border-strong:#CBD5E1;
+--c10-table-head-bg:#EBF2FA;
+--c10-text-primary:#171717;     /* texto de interfaz (nav, celdas, labels) */
+--c10-text-secondary:#475569;   /* texto secundario e inactivo */
+--c10-text-muted:#64748B;       /* metadatos y conteos */
+--c10-text-inverse:#FFFFFF;
+
+/* Semantic aliases — prefer these in product code */
+--surface-app:var(--c10-bg-app);
+--surface-card:var(--c10-surface);
+--surface-raised:var(--c10-surface);
+--surface-sunken:var(--c10-surface-sunken);
+--border-default:var(--c10-border);
+--border-focus:var(--c10-blue);
+--text-heading:#0F172A;
+--text-title:#0A0A0A;
+--action-create:#16A34A;   /* acción de crear: siempre verde */
+--text-body:var(--c10-text-primary);
+--text-subtle:var(--c10-text-secondary);
+--text-placeholder:var(--c10-text-muted);
+--action-primary:var(--c10-blue);
+--action-primary-hover:var(--c10-blue-hover);
+--action-danger:var(--c10-danger);
+--focus-ring:rgba(47,128,237,.15);
+}
