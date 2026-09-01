@@ -1,9 +1,0 @@
-:root{
---space-1:4px;--space-2:6px;--space-3:8px;--space-4:12px;--space-5:16px;
---space-6:20px;--space-7:24px;--space-8:32px;--space-9:40px;--space-10:48px;
---control-h-sm:36px;   /* compactos: acciones de fila, selector de ubicación */
---control-h-md:40px;   /* ESTÁNDAR: botones, inputs, selects, segmentados */
---control-h-lg:48px;   /* auth */
---card-padding:20px;--card-padding-lg:24px;
---header-h:57px;--page-gutter:24px;
-}
