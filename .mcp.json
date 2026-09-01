@@ -2,7 +2,7 @@
   "mcpServers": {
     "lkf-knowledge": {
       "command": "bash",
-      "args": ["mcp/run.sh"]
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/run.sh"]
     }
   }
 }

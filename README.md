@@ -24,8 +24,11 @@ Esto instala:
   `/lkf-claude:worktree` (trabajar una tarea aislada en un git worktree).
 - **MCP server `lkf-knowledge`**: `lkf_search`, `lkf_get`, `lkf_list`,
   `lkf_add`, `lkf_validate` — consulta la carpeta `knowledge/` en vivo, sin
-  necesidad de Docker (solo requiere `python3` con `pip`; si no hay
-  `python3` disponible, cae de vuelta a correr `mcp/Dockerfile`).
+  necesidad de Docker. Solo requiere `python3` con el módulo `venv`
+  (`sudo apt install python3-venv` en Debian/Ubuntu); si tienes `uv`, lo usa
+  directo. Sus dependencias se aíslan en `~/.cache/lkf-claude/venv`, fuera del
+  plugin, para que sobrevivan a las actualizaciones. Si no hay `python3`, cae
+  de vuelta a correr `mcp/Dockerfile`.
 
 ## Qué hay en `knowledge/`
 

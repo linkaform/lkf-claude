@@ -1,27 +1,51 @@
 #!/bin/bash
 # Levanta el MCP server de lkf-knowledge (stdio).
-# Llamado por Claude Code — stdout es el canal MCP, logs van a stderr.
-set -e
+# Llamado por Claude Code — stdout es el canal MCP, todo log va a stderr.
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SERVER="$SCRIPT_DIR/server.py"
+REQ="fastmcp>=2.0.0"
 
-# Camino rápido: correr el server directo con python3 (única dependencia:
-# fastmcp). Evita requerir Docker-in-Docker a quien instale el plugin.
-if command -v python3 > /dev/null 2>&1; then
-    if ! python3 -c "import fastmcp" > /dev/null 2>&1; then
-        echo "[lkf-mcp] Instalando dependencia fastmcp..." >&2
-        pip3 install --quiet --user "fastmcp>=2.0.0" >&2
-    fi
-    exec python3 "$SCRIPT_DIR/server.py"
+log() { echo "[lkf-mcp] $*" >&2; }
+
+# El venv vive en la cache del usuario, no en el directorio del plugin: así
+# sobrevive a las actualizaciones del plugin (que reinstalan en una ruta
+# nueva por versión) y no ensucia el repo.
+VENV="${XDG_CACHE_HOME:-$HOME/.cache}/lkf-claude/venv"
+
+# Camino rápido: uv resuelve el entorno solo y es mucho más rápido.
+if command -v uv > /dev/null 2>&1; then
+    exec uv run --quiet --with "$REQ" python "$SERVER"
 fi
 
-# Fallback: si no hay python3 disponible pero sí Docker, usar el Dockerfile.
+if command -v python3 > /dev/null 2>&1; then
+    if [ ! -x "$VENV/bin/python" ]; then
+        log "Creando venv en $VENV..."
+        # No usamos pip3 --user: en Debian/Ubuntu con PEP 668 el entorno del
+        # sistema está "externally managed" y la instalación falla.
+        if ! python3 -m venv "$VENV" >&2; then
+            log "Error: no se pudo crear el venv. Instala python3-venv:"
+            log "  sudo apt install python3-venv"
+            exit 1
+        fi
+    fi
+
+    if ! "$VENV/bin/python" -c "import fastmcp" > /dev/null 2>&1; then
+        log "Instalando $REQ..."
+        "$VENV/bin/pip" install --quiet --disable-pip-version-check "$REQ" >&2
+    fi
+
+    exec "$VENV/bin/python" "$SERVER"
+fi
+
+# Fallback: sin python3 pero con Docker.
 if command -v docker > /dev/null 2>&1; then
     REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
     IMAGE="lkf-mcp-server:latest"
 
     if ! docker image inspect "$IMAGE" > /dev/null 2>&1; then
-        echo "[lkf-mcp] Construyendo imagen Docker por primera vez..." >&2
+        log "Construyendo imagen Docker por primera vez..."
         docker build -t "$IMAGE" "$SCRIPT_DIR" >&2
     fi
 
@@ -31,5 +55,5 @@ if command -v docker > /dev/null 2>&1; then
         "$IMAGE"
 fi
 
-echo "[lkf-mcp] Error: se necesita python3 (con pip) o docker para correr el MCP server." >&2
+log "Error: se necesita python3 (con el módulo venv) o docker para correr el MCP server."
 exit 1

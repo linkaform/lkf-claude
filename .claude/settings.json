@@ -2,13 +2,5 @@
   "enabledPlugins": {
     "lkf-claude@lkf-claude": true,
     "clave10-design@lkf-claude": true
-  },
-  "mcpServers": {
-    "lkf-knowledge": {
-      "command": "bash",
-      "args": [
-        "mcp/run.sh"
-      ]
-    }
   }
 }
