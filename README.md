@@ -17,7 +17,18 @@ una sola línea.
 /plugin install lkf-claude@lkf-claude
 ```
 
-Esto instala:
+El marketplace publica además `clave10-design`, el sistema de diseño de
+Clave 10 (tokens, primitivos, guidelines y UI kit). Instálalo solo si trabajas
+en interfaces con esa marca:
+
+```
+/plugin install clave10-design@lkf-claude
+```
+
+Qué plugins habilitar es decisión de cada quien: Claude Code lo guarda en tu
+`.claude/settings.json` local, que este repo no versiona.
+
+`lkf-claude` instala:
 - **Skills**: `/lkf-claude:lkf` (modo desarrollo SDK), `/lkf-claude:lkf-module`
   (scaffolding de módulo), `/lkf-claude:lkf-learn` (capturar un patrón nuevo),
   `/lkf-claude:lkf-review` (revisar código contra convenciones),
