@@ -92,6 +92,25 @@ front = workspace().path("front", required=False)   # None si no está
 - `examples/` — plantillas completas y funcionales
 - `schemas/` — shape real de las colecciones de MongoDB
 
+### Los dos niveles del knowledge
+
+Ese `knowledge/` es el **bundled**: el conocimiento curado del equipo, versionado
+en git y que viaja con cada release del plugin. Al instalar desde el marketplace
+queda en una ruta con la versión, así que se reemplaza entero en cada update.
+
+Por eso hay un segundo nivel, el **local**: `~/.config/lkf/knowledge/`
+(configurable con `LKF_KNOWLEDGE_DIR`). Es donde `lkf_add` guarda por default, y
+sobrevive a las actualizaciones.
+
+`lkf_search`, `lkf_get` y `lkf_list` leen de los dos y marcan de cuál viene cada
+entrada. Ante un nombre repetido gana el local: tu versión de un patrón le gana a
+la que trae el release, y `lkf_add` te avisa cuando estás tapando una.
+
+Para que un aprendizaje llegue al equipo tiene que acabar en el bundled: desde el
+checkout del repo, `lkf_add(..., shared=True)` lo escribe ahí para commitearlo.
+Desde una copia instalada eso se rechaza —lo que se escriba ahí se pierde en el
+próximo update— y te dice qué hacer en su lugar.
+
 ## Reglas fundamentales del SDK (resumen)
 
 1. IDs de campos siempre vía `self.f['campo']`/`self.mf['campo']`, nunca ObjectIds crudos.

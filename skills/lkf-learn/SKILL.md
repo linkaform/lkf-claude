@@ -30,11 +30,32 @@ Sigue este proceso:
 
 5. Muestra al usuario el borrador y pide confirmación.
 
-6. Al confirmar, usa `lkf_add(name, category, content, description)` para guardarlo.
+6. Al confirmar, decide dónde guardarlo y usa
+   `lkf_add(name, category, content, description, shared=...)`.
 
-7. Recuérdale de hacer commit:
+   La base tiene dos niveles:
+
+   - **local** (default, `shared=False`) — el knowledge de quien está usando el
+     plugin, en `~/.config/lkf/knowledge/`. Sobrevive a las actualizaciones.
+   - **compartido** (`shared=True`) — el `knowledge/` del repo `lkf-claude`,
+     para commitear y que le llegue al equipo en el siguiente release. Solo
+     funciona si el plugin corre desde su checkout de git; desde una copia
+     instalada `lkf_add` lo rechaza y te lo dice.
+
+   Guarda como **compartido** cuando el aprendizaje sea una convención del SDK
+   que aplica a cualquiera. Guarda como **local** cuando sea específico de un
+   cliente, de una cuenta o de un experimento que todavía no está confirmado.
+   Si no está claro, guarda local: siempre se puede promover después.
+
+   En las lecturas los dos niveles se mezclan, y ante un nombre repetido gana
+   el local. Si estás tapando una entrada que trae el plugin, `lkf_add` te avisa.
+
+7. Si lo guardaste como compartido, recuérdale hacer commit:
    ```
    git add knowledge/
    git commit -m "knowledge: agrega patrón <nombre>"
    ```
-   Y push para que el equipo lo obtenga con `git pull`.
+   Y push para que el equipo lo obtenga en el siguiente release del plugin.
+
+   Si quedó local, no hay nada que commitear. Para promoverlo después, se copia
+   el archivo de `~/.config/lkf/knowledge/` al repo y se manda en un PR.

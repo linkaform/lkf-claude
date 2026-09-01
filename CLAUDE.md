@@ -19,7 +19,9 @@ Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultab
 - `lkf_search(query)` — buscar patrones por término
 - `lkf_get(name)` — obtener patrón completo
 - `lkf_list()` — ver todo el conocimiento disponible
-- `lkf_add(name, category, content)` — agregar nuevo aprendizaje
+- `lkf_add(name, category, content, shared=False)` — agregar aprendizaje. Default:
+  tu knowledge local (`~/.config/lkf/knowledge/`, sobrevive updates). `shared=True`
+  lo escribe en el repo para commitearlo, solo desde el checkout de git.
 - `lkf_validate(code)` — verificar código contra convenciones
 
 ## Skills disponibles
