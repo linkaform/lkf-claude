@@ -12,8 +12,16 @@
   "plugins": [
     {
       "name": "lkf-claude",
-      "description": "Skills (/lkf, /lkf-module, /lkf-learn, /lkf-review), MCP server lkf-knowledge y knowledge base de patrones, convenciones y schemas para trabajar con linkaform_sdk",
+      "description": "Skills (/lkf, /lkf-module, /lkf-learn, /lkf-review, /worktree), MCP server lkf-knowledge y knowledge base de patrones, convenciones y schemas para trabajar con linkaform_sdk",
       "source": "./"
+    },
+    {
+      "name": "clave10-design",
+      "description": "Sistema de diseño oficial de Clave 10: tokens, primitivos, guidelines y UI kit. Instálalo solo si trabajas en interfaces con la marca Clave 10.",
+      "source": {
+        "source": "github",
+        "repo": "linkaform/clave10-design-system"
+      }
     }
   ]
 }

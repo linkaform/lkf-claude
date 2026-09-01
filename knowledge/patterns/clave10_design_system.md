@@ -4,26 +4,34 @@
 
 ## 0. Ubicación
 
-El sistema de diseño está exportado como paquete (tipo Agent Skill) en
-`lkf-claude/Design_System/` — hermano de este archivo, dentro del mismo
-proyecto `lkf-claude`. **Toda esta clase de conocimiento vive aquí, nunca en
-la memoria genérica de Claude Code** (`~/.claude/projects/**/memory/`): ese
-directorio es privado por sesión/usuario y no es lo que el equipo consulta;
-`lkf-claude/knowledge/` sí lo es.
+El sistema de diseño **ya no vive en este repo**. Está en su propio plugin,
+`clave10-design` (repo `linkaform/clave10-design-system`), publicado en el
+mismo marketplace que `lkf-claude`:
 
-Se generó a partir de `linkaform/clave10` rama `master` + una guía de marca
-oficial (`Design_System/uploads/design-system.css` v1.0.0). Estructura:
+```
+/plugin install clave10-design@lkf-claude
+```
 
-- `Design_System/readme.md` — documento completo (color, tipografía, copy,
-  anatomía de tabla, headers, animación, etc.). Léelo entero antes de un
-  trabajo de UI grande; aquí solo se resumen los puntos que más se han
-  necesitado aplicar.
-- `Design_System/tokens/*.css` — `colors.css`, `typography.css`,
-  `spacing.css`, `radii.css`, `elevation.css`, `motion.css`, `fonts.css`.
-- `Design_System/components/{core,forms,data,navigation,feedback}/*.jsx` +
-  `.prompt.md` — primitivos de referencia (no son los componentes reales del
-  repo, son la especificación visual).
-- `Design_System/guidelines/*.card.html` — specímenes visuales individuales.
+Se separó porque es un activo de producto que se deriva de `linkaform/clave10`
+y sincroniza contra ese repo, mientras que `lkf-claude` sirve a cualquier front
+montado sobre el BaaS. Este documento se queda aquí: es el **resumen aplicado**
+—los puntos que más se han necesitado— y sigue siendo buscable vía
+`lkf_search`. **Esta clase de conocimiento va en `lkf-claude/knowledge/`, nunca
+en la memoria genérica de Claude Code** (`~/.claude/projects/**/memory/`): ese
+directorio es privado por sesión/usuario y no es lo que el equipo consulta.
+
+Rutas relativas a la raíz de la skill `clave10-design`:
+
+- `readme.md` — documento completo (color, tipografía, copy, anatomía de tabla,
+  headers, animación, etc.). Léelo entero antes de un trabajo de UI grande.
+- `tokens/*.css` — `colors.css`, `typography.css`, `spacing.css`, `radii.css`,
+  `elevation.css`, `motion.css`, `fonts.css`.
+- `components/{core,forms,data,navigation,feedback}/*.jsx` + `.prompt.md` —
+  primitivos de referencia (no son los componentes reales del repo, son la
+  especificación visual).
+- `guidelines/*.card.html` — specímenes visuales individuales.
+- `uploads/design-system.css` — la guía de marca oficial v1.0.0 de la que se
+  generó todo, junto con `linkaform/clave10` rama `master`.
 
 ## 1. El azul de acción único ya existe en el código real
 
@@ -95,7 +103,7 @@ sistema busca evitar. En vez de eso:
 
 1. Agrega la variable a `clave10/src/app/globals.css` (junto a
    `--button-primary`, dentro de `:root`), usando **el mismo nombre** que
-   trae `Design_System/tokens/colors.css` (prefijo `c10-`) para que sea
+   trae `tokens/colors.css` de `clave10-design` (prefijo `c10-`) para que sea
    trivial relacionar uno a uno.
 2. Regístrala en `clave10/tailwind.config.ts` → `theme.extend.colors` para
    que exista como clase de Tailwind real (`bg-c10-xxx`, `text-c10-xxx`,
@@ -128,7 +136,7 @@ porque coinciden exacto en hex, pero sin alias propio), `--c10-danger`,
 `--c10-warning`, `--c10-purple`, `--c10-magenta`, los `--c10-chip-*` de
 `EstatusBadge`, y los neutros (`--c10-surface-muted`, `--c10-surface-sunken`,
 `--c10-text-secondary`, `--c10-text-muted`). Fuente exacta de valores:
-`lkf-claude/Design_System/tokens/colors.css` (cópialos literal, mismos
+`tokens/colors.css` de la skill `clave10-design` (cópialos literal, mismos
 nombres). Sigue el mismo patrón de la sección 5 arriba: variable en
 `globals.css` → alias en `tailwind.config.ts` → usar la clase, nunca el hex
 suelto. Buen momento para hacerlo es la próxima vez que se toque un
