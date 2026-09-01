@@ -72,7 +72,7 @@ with DAG(dag_id='dag_<account_id>_<sub_id>_<schedule>_<hash>', ..., params=param
     do_run_{task_name}_{sub_id}_2 = LKFRunScript(
         name='Nombre tarea',
         task_id='run_{task_name}_{sub_id}_2',
-        params={'script_id': '<script_id>'},
+        params={'script_id': '<script_id>'},   # params extra del script: ver `airflow_script_params`
     )
 
 do_run_lkf_login_{sub_id}_1.set_downstream(do_run_{task_name}_{sub_id}_2)
@@ -121,3 +121,9 @@ airflow_bob almacena en la DB `cron_task`:
 - Los `answers` en `CreateRecord`/`CreateAndAssignTask` pueden contener expresiones dinámicas evaluadas en tiempo de ejecución con `eval_answers()`
 - `set_record_on_event()` hace POST al endpoint `/event/setRecord` de airflow_bob para registrar la ejecución; no es crítico para el flujo principal
 - El ambiente se detecta por el hostname del container: sufijo `_local`, `_qa`, `_preprod`
+- Los `params` de una **tarea** (no del DAG) pasan por el modelo pydantic `DagTaskParams`
+  (`airflow_bob/app/base_models.py`), que descarta en silencio cualquier llave que no declare.
+  Por eso `description`/`summary` nunca salen en el DAG generado. Para mandar parámetros
+  propios a un script ver `airflow_script_params`
+- Hay 4 copias del generador en el repo (`lkf-ms`, `servido`, `servido_test`, `airflow_bob`) y
+  no son iguales; el `.py` generado dice cuál corrió (ver `airflow_script_params`)
