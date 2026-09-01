@@ -1,7 +1,7 @@
 {
   "name": "lkf-claude",
   "description": "Conocimiento, skills y MCP server para desarrollar con linkaform_sdk usando Claude Code",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Linkaform"
   },

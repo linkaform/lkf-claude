@@ -41,6 +41,48 @@ Qué plugins habilitar es decisión de cada quien: Claude Code lo guarda en tu
   plugin, para que sobrevivan a las actualizaciones. Si no hay `python3`, cae
   de vuelta a correr `mcp/Dockerfile`.
 
+## Dónde están tus repos
+
+Las skills que operan sobre el ecosistema (`clave10-account-scripts-sync`,
+`clave10-prod-update`) necesitan saber dónde tienes clonado cada repo. No lo
+asumen: lo resuelve `lib/lkf_workspace.py`, en este orden por repo.
+
+1. Variable de entorno propia: `LKF_ADDONS`, `LKF_API`, `LKF_SANIC`,
+   `LKF_FRONT`, `LKF_BACKEND`.
+2. `~/.config/lkf/workspace.json` → `repos.<clave>`.
+3. La raíz declarada (`LKF_WORKSPACE`, o `root` en ese JSON) más el nombre
+   convencional del directorio.
+4. Autodetección desde el cwd, sus ancestros, `~/lkf` y `~/linkaform-app`.
+
+Cada candidato se valida contra un marcador que solo existe en ese repo
+(`lkf_addons/` para addons, `next.config.ts` para el front, …), así que no
+puede agarrar por error un homónimo vacío — algo real cuando tienes `addons`,
+`addons_v1` y `addons_126` colgando del mismo nivel.
+
+Si una ruta **explícita** (variable de entorno o entrada en el JSON) no valida,
+falla diciéndolo. No se cae a la autodetección: trabajar en silencio sobre un
+checkout distinto al que pediste es peor que un error.
+
+En la mayoría de los casos no hay que configurar nada. Para ver qué está
+resolviendo, o para fijarlo:
+
+```
+python3 lib/lkf_workspace.py          # tabla de repos y de dónde salió cada uno
+python3 lib/lkf_workspace.py --json
+python3 lib/lkf_workspace.py --init   # autodetecta y escribe el workspace.json
+```
+
+Desde el script de una skill:
+
+```python
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "lib"))
+from lkf_workspace import workspace
+
+addons = workspace().path("addons")
+settings = workspace().file("addons", "config/local_settings.py")
+front = workspace().path("front", required=False)   # None si no está
+```
+
 ## Qué hay en `knowledge/`
 
 - `conventions/` — reglas de nomenclatura, herencia, anti-patrones

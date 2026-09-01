@@ -72,11 +72,23 @@ explícitamente que corra directo, sin capas de dry-run ni de doble verificació
    ❌ 100 - ERROR (se detuvo aquí, no se corrieron las cuentas restantes)
    ```
 
-## Configuración pendiente (placeholder)
+## Dónde encuentra el repo addons
 
-`--lkf-path` (ruta a la raíz del proyecto addons donde vive el ejecutable `./lkf`)
-tiene como default `/Users/pacogod/lkf/addons` (esta Mac). Si en algún momento el
-ejecutable vive en otra ruta o en otra máquina, pasar `--lkf-path` explícito.
+`--lkf-path` (raíz del proyecto addons, donde vive el ejecutable `./lkf`) ya no
+tiene default: lo resuelve `lib/lkf_workspace.py` del plugin, en este orden —
+`LKF_ADDONS`, `~/.config/lkf/workspace.json`, y autodetección a partir del cwd
+y de `~/lkf`. Cada candidato se valida buscando `lkf_addons/` adentro, así que
+no puede agarrar por error un `addons_v1` o `addons_126` del mismo nivel.
+
+Si falla, el mensaje dice qué rutas probó y cómo arreglarlo. Para ver qué está
+resolviendo en esta máquina:
+
+```
+python3 lib/lkf_workspace.py          # tabla de repos y de dónde salió cada uno
+python3 lib/lkf_workspace.py --init   # escribe ~/.config/lkf/workspace.json
+```
+
+`--lkf-path` sigue existiendo para forzar una ruta puntual.
 
 ## Seguridad
 

@@ -33,6 +33,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+# El resolver de workspace vive en lib/ del plugin, no junto a la skill.
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "lib"))
+from lkf_workspace import workspace
+
 
 def load_json(path: Path) -> dict:
     if not path.exists():
@@ -114,8 +118,10 @@ def main():
     )
     parser.add_argument(
         "--lkf-path",
-        default="/Users/pacogod/lkf/addons",
-        help="Ruta a la raiz del proyecto addons donde vive el ejecutable ./lkf. Default: /Users/pacogod/lkf/addons",
+        default=None,
+        help="Ruta a la raiz del proyecto addons donde vive el ejecutable ./lkf. "
+             "Por default se resuelve solo con lkf_workspace (LKF_ADDONS, "
+             "~/.config/lkf/workspace.json, o autodeteccion).",
     )
     parser.add_argument(
         "--continue-on-error", action="store_true",
@@ -123,7 +129,10 @@ def main():
     )
     args = parser.parse_args()
 
-    lkf_path = Path(args.lkf_path)
+    if args.lkf_path:
+        lkf_path = Path(args.lkf_path).expanduser()
+    else:
+        lkf_path = workspace().path("addons")
     lkf_executable = lkf_path / "lkf"
     if not lkf_executable.exists():
         sys.exit(f"No encuentro el ejecutable ./lkf en {lkf_path}. Ajusta --lkf-path.")

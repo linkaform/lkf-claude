@@ -42,6 +42,10 @@ import os
 import re
 import sys
 from pathlib import Path
+
+# El resolver de workspace vive en lib/ del plugin, no junto a la skill.
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "lib"))
+from lkf_workspace import workspace
 from urllib.parse import unquote
 
 FIELD_RE = re.compile(r"['\"]?(\w+)['\"]?\s*:\s*'([^']*)'")
@@ -153,27 +157,25 @@ def load_local_settings_candidates(path: Path) -> tuple:
 
 
 def find_local_settings_path() -> Path:
-    """Busca config/local_settings.py sin asumir el usuario/maquina de nadie en
-    particular. Orden: variable de entorno explicita, luego la convencion mas
-    comun de checkout (~/lkf/addons/...). Si no aparece en ninguna, se le pide
-    a quien esta corriendo esto que pase --local-settings-path a mano -- nunca
-    se asume un default especifico de una persona."""
-    env_path = os.environ.get("CLAVE10_LOCAL_SETTINGS_PATH")
-    candidates = []
-    if env_path:
-        candidates.append(Path(env_path))
-    candidates.append(Path.home() / "lkf" / "addons" / "config" / "local_settings.py")
+    """Ubica config/local_settings.py dentro del repo addons, sin asumir el
+    usuario ni la maquina de nadie.
 
-    for candidate in candidates:
+    CLAVE10_LOCAL_SETTINGS_PATH se sigue respetando por compatibilidad con
+    quien ya la tenga exportada. Si no esta, se resuelve el repo addons con
+    lkf_workspace (LKF_ADDONS, ~/.config/lkf/workspace.json, autodeteccion)."""
+    env_path = os.environ.get("CLAVE10_LOCAL_SETTINGS_PATH")
+    if env_path:
+        candidate = Path(env_path).expanduser()
         if candidate.exists():
             return candidate
-
-    tried = "\n".join(f"  - {c}" for c in candidates)
-    sys.exit(
-        f"No encontre config/local_settings.py automaticamente. Probe:\n{tried}\n"
-        f"Pasa --local-settings-path con tu ruta real, o exporta "
-        f"CLAVE10_LOCAL_SETTINGS_PATH."
-    )
+        # Si te dijeron una ruta exacta y esta mal, se avisa; caerse a la
+        # autodeteccion seria trabajar en silencio sobre otro checkout.
+        sys.exit(
+            f"CLAVE10_LOCAL_SETTINGS_PATH apunta a:\n  {candidate}\n"
+            f"...pero ese archivo no existe. Corrigela, o quitala para que se "
+            f"resuelva solo."
+        )
+    return workspace().file("addons", "config/local_settings.py")
 
 
 def load_json(path: Path, required: bool) -> dict:

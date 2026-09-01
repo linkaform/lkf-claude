@@ -114,7 +114,13 @@ Ofrecer correr primero con `--dry-run` (no ejecuta docker exec, solo muestra qu�
 
 ### Configuración confirmada
 
-- `--local-settings-path`: confirmado, `/Users/pacogod/lkf/addons/config/local_settings.py` en esta Mac (volumen montado al contenedor). Si Paco corre esto desde otra máquina, pedir la ruta explícita.
+- `--local-settings-path`: no hace falta pasarlo. Se resuelve solo con
+  `lib/lkf_workspace.py` del plugin (`config/local_settings.py` dentro del repo
+  `addons`), en este orden: `CLAVE10_LOCAL_SETTINGS_PATH` —se respeta por
+  compatibilidad—, `LKF_ADDONS`, `~/.config/lkf/workspace.json`, y autodetección
+  desde el cwd y `~/lkf`. Si una ruta explícita está mal, falla diciéndolo en vez
+  de caerse a otro checkout en silencio. Para diagnosticar en cualquier máquina:
+  `python3 lib/lkf_workspace.py`.
 - `--container`: se asume `lkf-addons` (confirmado por el prompt `nonroot@lkf-addons` que Paco mostró), pero validar si tiene otro nombre en `docker ps` antes de la primera corrida real.
 
 ## Seguridad — reglas estrictas

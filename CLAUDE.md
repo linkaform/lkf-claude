@@ -31,6 +31,15 @@ Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultab
 - `/clave10-prod-update` — actualiza el contenedor Docker de producción de una o varias cuentas (`./lkf update prod <id>`)
 - `/worktree <instrucciones>` — crea un worktree aislado en `.trees/<nombre>` y ejecuta ahí la tarea
 
+## Rutas de repos
+Nunca hardcodear `~/lkf/<repo>` en scripts de skills. Usar el resolver:
+```python
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "lib"))
+from lkf_workspace import workspace
+addons = workspace().path("addons")   # claves: addons, api, sanic, front, backend
+```
+Diagnóstico: `python3 lib/lkf_workspace.py`
+
 ## Estructura
 ```
 lkf_addons/addons/
