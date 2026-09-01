@@ -29,6 +29,7 @@ Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultab
 - `/lkf-review` — revisar código contra convenciones del SDK
 - `/clave10-account-scripts-sync` — sync de scripts de módulos por cuenta de cliente (batch), incluye alta/refresco controlado de `accounts.json`
 - `/clave10-prod-update` — actualiza el contenedor Docker de producción de una o varias cuentas (`./lkf update prod <id>`)
+- `/worktree <instrucciones>` — crea un worktree aislado en `.trees/<nombre>` y ejecuta ahí la tarea
 
 ## Estructura
 ```

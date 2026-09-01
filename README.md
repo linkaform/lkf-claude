@@ -20,7 +20,8 @@ una sola línea.
 Esto instala:
 - **Skills**: `/lkf-claude:lkf` (modo desarrollo SDK), `/lkf-claude:lkf-module`
   (scaffolding de módulo), `/lkf-claude:lkf-learn` (capturar un patrón nuevo),
-  `/lkf-claude:lkf-review` (revisar código contra convenciones).
+  `/lkf-claude:lkf-review` (revisar código contra convenciones),
+  `/lkf-claude:worktree` (trabajar una tarea aislada en un git worktree).
 - **MCP server `lkf-knowledge`**: `lkf_search`, `lkf_get`, `lkf_list`,
   `lkf_add`, `lkf_validate` — consulta la carpeta `knowledge/` en vivo, sin
   necesidad de Docker (solo requiere `python3` con `pip`; si no hay
