@@ -75,6 +75,37 @@ lote) sobre datos reales de cuenta:
   predecible (aunque más "bruta") es la preferida — más fácil de razonar,
   auditar y explicar que un merge inteligente con casos edge implícitos.
 
+## 4. Confirmación al cerrar un modal de captura: solo si ya hay algo que perder
+
+Un modal de captura (clic fuera, Escape, la X) no debe perder lo capturado
+sin avisar — pero exigir confirmación siempre, incluso cuando el modal
+está vacío, es fricción innecesaria.
+
+**Patrón**:
+- Bloquea el cierre automático (`onPointerDownOutside`/`onInteractOutside`/
+  `onEscapeKeyDown` → `preventDefault()`) y haz que la X y el botón
+  "Cancelar" converjan en un panel de confirmación propio
+  ("Seguir editando" / "Sí, cancelar") en vez de cerrar directo.
+- **Condiciona ese bloqueo a si ya hay datos reales capturados.** Si el
+  modal empieza a capturar datos desde que se abre (ej. un formulario de
+  alta con campos ya tocados), la confirmación aplica siempre. Si el modal
+  arranca con un estado "vacío" real (ej. un buscador sin resultado
+  todavía), no hay nada que perder — cerrar sin avisar en ese estado es
+  correcto; la confirmación solo se activa después de que aparece algo
+  capturado (ej. tras encontrar un resultado y empezar a operar sobre él).
+
+```ts
+const requestClose = () => {
+  if (hayDatosCapturados) setShowCancelConfirm(true);
+  else { resetForm(); onClose(); }
+};
+```
+
+Antes de replicar este patrón en un modal nuevo, identifica en qué momento
+ese modal específico empieza a tener "algo que perder" — no copies la
+versión incondicional (confirma siempre) si el modal tiene una fase inicial
+genuinamente vacía.
+
 ## Ver también
 - `clave10_design_system.md` — reglas visuales (color, tipografía, radios).
 - `clave10_qr_preview_publico.md` — otro gotcha de las mismas vistas
