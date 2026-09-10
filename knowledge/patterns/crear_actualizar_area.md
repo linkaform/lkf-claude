@@ -186,6 +186,39 @@ hasta que alguien dispare `sync_catalogs_records`.
   feedback temprano, aunque `create_new_area` ya es seguro llamarlo dos
   veces (no duplica, solo no hace nada la segunda vez).
 
+## `config_area` (accesos/app.py) — sincronizar áreas capturadas offline (CouchDB → LinkaForm)
+
+Función distinta a `create_new_area`/`update_area` de arriba: sincroniza
+áreas capturadas offline (documento CouchDB con `status='synced'`,
+pendiente de subir) hacia LinkaForm. Tres reglas aprendidas al corregirla:
+
+1. **Valida el dict de error de los helpers de formateo ANTES de postear**.
+   Si un helper tipo `get_area_model` regresa `{"error": "..."}` (ej. falta
+   `nombre_area`/`area_catalogo`), no lo mandes igual como `answers` a
+   `post_forms_answers` — corta antes, marca el registro de origen (en
+   CouchDB) con `status='error'` + el mensaje real, y no sigas.
+
+2. **Reusa el mismo `_id` que ya tenía el documento en CouchDB**, si el
+   front/otra capa ya lo conoce, en vez de dejar que LinkaForm genere uno
+   nuevo al crear el registro en Mongo:
+
+   ```python
+   metadata.update({'id': record.id})   # antes de post_forms_answers
+   ```
+
+   Mismo patrón usado por `create_check_area`
+   (`metadata.update({"id": data.id})`) y `create_access_pass`. Aplica a
+   cualquier función `create_*`/`config_*` que cree un registro NUEVO en
+   LinkaForm a partir de un doc con un id ya conocido y referenciado desde
+   otro lado (fotos, QR, referencias cruzadas) — sin esto, el nuevo `_id`
+   de Mongo queda desconectado del id que ya usa el resto del sistema.
+
+3. **No repitas transiciones de status redundantes** — si el resultado
+   final de éxito es `'received'`, no pases por `'synced'→'received'→
+   'received'`; si el resultado de error ya quedó marcado en el paso 1, no
+   lo vuelvas a reasignar más abajo.
+
 ## Ver también
 - `patterns/post_record.md` / `patterns/patch_record.md` — patrones genéricos de creación/actualización que `create_register`/`update_area` siguen por debajo.
 - `patterns/self_f_label_collision.md` — mismo tipo de gotcha de field-ids compartidos entre `self.f`/`self.mf`.
+- `patterns/deploy_app_py_vs_scripts_sync.md` — un fix en `config_area` (vive en `accesos/app.py`) necesita rebuild+update de prod, no solo sync de scripts.
