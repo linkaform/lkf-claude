@@ -194,3 +194,53 @@ comparación normalizada (`options` real del campo → mapa `{valor
 normalizado: value real}`), no por un literal fijo en el código. Si en el
 futuro se agregan opciones nuevas al mismo campo, vuelve a verificar sus
 values — no asumas que seguirán el mismo patrón que las anteriores.
+
+## 11. Confiar en `unlist()` para degradar una lista vacía
+
+```python
+# MAL — asume que unlist() siempre desempaca a un escalar (o "" si está vacío)
+telefono = self.unlist(answers.get(campo, []))
+respuesta[self.f['telefono']] = [telefono]   # si unlist([]) regresó [], esto queda [[]]
+
+# BIEN — degradar explícito con `or ""` después de unlist()
+telefono = self.unlist(answers.get(campo, [])) or ""
+respuesta[self.f['telefono']] = [telefono]
+```
+
+**Por qué**: `unlist()` (`linkaform_api/lkf_base/base.py`) espera desempacar
+una lista de un elemento a ese elemento — pero si el argumento es una
+lista **vacía** (`[]`, como LinkaForm guarda "sin capturar" en varios
+campos de catálogo), regresa `[]` tal cual, sin degradar a `""`. Si el
+código downstream vuelve a envolver ese resultado en una lista nueva
+(patrón común al reconstruir `answers` para reenviar), el resultado final
+queda `[[]]` — una lista de 1 elemento que es a su vez una lista vacía, en
+vez de `[""]`. Esto rompe cualquier consumidor que espere un string en esa
+posición (ej. generación de PDF, que puede fallar con "Estructura
+incorrecta en answers" sin más detalle).
+
+**Por qué el fix va en el call site y no en `unlist()` mismo**: es un
+helper compartido usado por decenas de módulos — cambiar su comportamiento
+global es alto riesgo/blast radius grande para un fix que solo hace falta
+en los call sites que reenvuelven el resultado. Agrega `or ""` (o el
+default correcto para tu caso) justo después de cada llamada a `unlist()`
+cuyo resultado se vuelva a envolver en una estructura nueva.
+
+## 12. Depurar con datos que pueden traer credenciales reales sin filtrar
+
+```python
+# MAL — cualquier valor de auth (JWT, APIKEY, token de sesión) impreso
+# completo en un log/salida de herramienta compromete la cuenta si ese log
+# queda expuesto (transcript, PR, canal compartido)
+print(response)   # response incluye {'apikey': '...', 'jwt': '...'}
+
+# BIEN — verifica solo lo necesario (existencia, longitud, prefijo) sin
+# imprimir el valor completo
+print(bool(response.get('apikey')), len(response.get('jwt', '')))
+```
+
+**Por qué**: un `get_jwt`/login exitoso, o leer `localStorage`/variables de
+entorno con fines de depuración, puede traer APIKEY/JWT/tokens de sesión
+reales en la respuesta — no importa que la intención sea solo inspeccionar
+el flujo, el valor queda comprometido en cuanto aparece en una salida
+visible (log, transcript, captura compartida). Si ya se expuso un secreto
+así, rotar la APIKEY o cerrar la sesión afectada cuanto antes.
