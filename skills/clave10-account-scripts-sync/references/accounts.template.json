@@ -55,5 +55,15 @@
     "username": "hergo",
     "account_id": "31320",
     "apikey": ""
+  },
+  "testing": {
+    "username": "testing",
+    "account_id": "31359",
+    "apikey": ""
+  },
+  "ventas": {
+    "username": "ventas@clave10.com",
+    "account_id": "31374",
+    "apikey": ""
   }
 }
