@@ -56,6 +56,27 @@ skills, en ese orden (scripts primero, build+update después).
 | `modules/<modulo>/items/forms\|catalogs\|reports/*` | `lkfaddons install -m <modulo> -i forms\|catalogs\|reports` |
 | `lkf_addons/addons/<modulo>/app.py` o `model.py` (o cualquier cosa dentro de `lkf_addons/`) | `git push` + `./lkf -p build prod` + `./lkf update prod <id>` |
 
+## Debugging: un 401 justo tras iniciar sesión NO es necesariamente race condition
+
+Si un front (web o móvil) muestra `401` en un endpoint específico
+inmediatamente después de iniciar sesión con un usuario/cuenta nuevo, la
+primera sospecha razonable es una condición de carrera del token (JWT
+todavía no propagado, sesión no lista) — pero en la práctica, la causa más
+común es otra: **ese script/módulo específico no está compartido/instalado
+en esa cuenta**, y con sesión vieja no se nota porque el cache del cliente
+(ej. React Query) ya tenía datos previos tapando el error.
+
+**Cómo confirmarlo sin asumir**: repite la misma llamada (mismo JWT, mismo
+momento) contra OTRO script que sí sepas que está instalado en esa cuenta.
+
+- Si el otro script también da 401 → sí puede ser el token/sesión.
+- Si el otro script da un error normal de negocio (ej. `400` por un
+  parámetro inválido) con el MISMO JWT → el token funciona bien, descarta
+  timing por completo. El 401 es específico del script que falla —
+  sospecha primero de que no esté compartido/instalado en esa cuenta (ver
+  tabla de arriba: instalar scripts es un paso de despliegue por cuenta,
+  no algo que "simplemente funcione" en todas).
+
 ## Ver también
 - `patterns/env_comparison_testing.md` / `patterns/pytest_integration_docker.md`
   — probar contra `docker exec` verifica la DB real pero tampoco corre el
