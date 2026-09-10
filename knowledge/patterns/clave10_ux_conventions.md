@@ -52,6 +52,29 @@ mismo modal ahorra código. Si tienes duda de si dos flujos son "el mismo"
 o "distintos" para el usuario, pregunta antes de fusionarlos en la UI —
 compartir backend no implica compartir modal.
 
+## 3. Features de escritura masiva/destructiva: guardado explícito + confirmación con conteo real
+
+Para cualquier editor tipo "tablero" (drag, alta, edición, borrado en
+lote) sobre datos reales de cuenta:
+
+- **Guardado explícito, nunca automático por acción.** Cualquier cambio
+  (drag, alta, edición, borrado) queda en estado local hasta que el
+  usuario le da clic a un botón "Guardar" real — ninguna llamada de red
+  se dispara antes de eso. Si un modal interno (ej. editar un item) solo
+  aplica el cambio en memoria (no toca el servidor todavía), su botón no
+  debe decir "Guardar" — usa "Aplicar", "Listo", etc., para no confundirlo
+  con el guardado real que sí persiste.
+- **Acciones destructivas/irreversibles necesitan confirmación con detalle
+  de impacto, no solo un botón.** Para algo como "reemplazar catálogo
+  completo", muestra el conteo exacto de lo afectado ("esto va a borrar
+  los N items actuales") y exige un paso de confirmación explícito (ej.
+  checkbox "entiendo que esto borra...") antes de habilitar el botón.
+- **Prefiere simplicidad sobre robustez "inteligente".** Ante la opción
+  entre "limpiar completo y recrear desde cero" vs. un merge/diff más
+  sofisticado para una operación de reemplazo masivo, la opción simple y
+  predecible (aunque más "bruta") es la preferida — más fácil de razonar,
+  auditar y explicar que un merge inteligente con casos edge implícitos.
+
 ## Ver también
 - `clave10_design_system.md` — reglas visuales (color, tipografía, radios).
 - `clave10_qr_preview_publico.md` — otro gotcha de las mismas vistas
