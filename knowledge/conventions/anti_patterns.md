@@ -153,3 +153,44 @@ grep -n "self\.user\.get(" addons/*/*.py
 ```
 Si ves `.get('id')` fuera de un método decorado con `@reload_user`, es
 sospechoso — casi siempre debería ser `.get('user_id')`.
+
+## 10. Asumir que el `value` de una opción radio/checkbox es un slug limpio
+
+```python
+# MAL — asume que la opción "Carga/Descarga" tiene value 'carga_descarga'
+if etapa == 'carga_descarga':
+    ...
+
+# BIEN — verificar el value real contra get_form_fields/el XML exportado
+# antes de codificarlo (a veces es literal 'carga_/_descarga', tal cual se
+# tecleó la etiqueta en la UI de Linkaform)
+if etapa == 'carga_/_descarga':
+    ...
+```
+
+**Por qué**: el `value` real de una opción de `radio`/`checkbox` en Linkaform
+es **literal lo que se tecleó como etiqueta** al construir el campo en la
+UI — no se autogenera como un slug normalizado. Esto pasó dos veces en el
+mismo módulo (transportistas):
+
+- Un checkbox de etapas con opciones "Inspección de Entrada" / "Carga /
+  Descarga" / "Inspección Salida" generó los values
+  `inspeccion_de_entrada` / `carga_/_descarga` / `inspeccion_salida` — no
+  los slugs limpios (`inspeccion_entrada`, `carga_descarga`) que se habían
+  asumido al diseñar el código antes de que la forma existiera.
+- Un radio "Sí/No" **no garantiza** que el value de la opción "Sí" sea el
+  string `"sí"` (con acento) — depende de cómo se escribió la etiqueta al
+  construir ESE campo específico. Una forma con la etiqueta "Si" (sin
+  acento) genera `value: "si"`. Un valor default que por casualidad
+  coincidía (`"sí"` con acento) ocultó el bug hasta que se probó contra una
+  forma distinta.
+
+**Cómo evitarlo**: nunca hardcodear el `value` esperado de una opción antes
+de que el campo exista en Linkaform. Una vez que existe, verifica el value
+real con `get_form_fields` o el XML exportado (no lo adivines por la
+etiqueta visible), y si el código necesita ser resiliente a cómo se
+capturó la etiqueta (ej. "Sí" con/sin acento, mayúsculas), resuelve por
+comparación normalizada (`options` real del campo → mapa `{valor
+normalizado: value real}`), no por un literal fijo en el código. Si en el
+futuro se agregan opciones nuevas al mismo campo, vuelve a verificar sus
+values — no asumas que seguirán el mismo patrón que las anteriores.
