@@ -113,6 +113,57 @@ Limpiar los contenedores `run` que quedan atrás (uno por invocación):
 docker ps -a --filter "name=docker-lkf-do-test-run" --format "{{.Names}}" | xargs -r docker rm -f
 ```
 
+## ⚠️ Un guard de entorno (preprod-only) con `assert` puede quedar enmascarado por `@pytest.mark.xfail`
+
+Si un fixture `autouse` protege tests de integración/e2e contra correr por
+accidente en producción (comparando `settings.config.get('HOST')` contra el
+host esperado), **no uses un `assert` plano** para bloquear:
+
+```python
+# MAL — si el test que disparó este fixture tiene @pytest.mark.xfail,
+# pytest trata la excepción del assert como parte del "fallo esperado" del
+# test: el resultado sale XFAIL tanto si el guard bloqueó (nunca tocó la
+# red) como si el test SÍ corrió contra el host real y falló por su propio
+# bug — ambos casos son indistinguibles en la salida.
+assert host == PREPROD_HOST
+
+# BIEN — pytest.exit() corta TODA la sesión de inmediato, sin pasar por el
+# manejo de resultado por test; no puede ser absorbido por xfail de ningún
+# test sin importar sus markers.
+if host != PREPROD_HOST:
+    pytest.exit(f"Guard de entorno: HOST={host}, se esperaba {PREPROD_HOST}")
+```
+
+Este mismo enmascaramiento aplica igual en CI si algún job corre con el
+environment equivocado por accidente y el test que dispara primero tiene
+`xfail` — el fix (un solo archivo, el guard compartido) cubre ambos casos.
+
+**Regla relacionada**: el guard siempre debe comparar contra
+`settings.config.get('HOST')` (la fuente de verdad real de a dónde van las
+peticiones) — nunca contra un puntero de configuración separado (ej. un
+archivo/env var que selecciona el ambiente) sin confirmar que ese puntero
+ya esté conectado a `settings.config`. Si pueden desincronizarse aunque sea
+temporalmente, el guard debe bloquear de más, no de menos.
+
+## ⚠️ `config.update({...})` no basta para propagar a `linkaform_api.settings.config`
+
+Al generar/actualizar `local_settings.py` (o su equivalente en CI) en
+tiempo de ejecución, actualizar solo el dict local no conecta nada:
+
+```python
+# INSUFICIENTE — el dict local queda desconectado del settings real
+config.update({...})
+
+# NECESARIO — ambas líneas, en este orden
+settings.config.update(config)
+settings = update_settings(settings)
+```
+
+Sin esas dos líneas adicionales, el import "parece" exitoso (no hay
+excepción) pero `linkaform_api` sigue usando los defaults placeholder
+(`your_APIKEY_HERE`, etc.) — sin ningún error visible. Cuesta un ciclo
+completo de debugging notar esto si no se sabe de antemano.
+
 ## Ver también
 - `patterns/env_comparison_testing.md` — otro harness de verificación con datos reales.
 - `patterns/legacy_script_migration.md` — punto 7, mismo espíritu de "verificar con datos reales, no solo lectura de código".
