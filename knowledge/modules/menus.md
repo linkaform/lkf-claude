@@ -114,6 +114,57 @@ escribir. Ver también `conventions/anti_patterns.md#10` (values de
 radio/checkbox no son slugs limpios) — aquí el matiz es al revés: el
 catálogo normaliza a minúsculas al leer pero exige capitalizado al escribir.
 
+## Compartir permisos NO es retroactivo — un usuario que no re-guarda su config se queda sin lo nuevo
+
+`set_user_permissions()` (`base/app.py`) solo se recalcula/comparte cuando
+se **crea o edita** el registro de `CONFIGURACION_MENUS` de ESE usuario
+(dispara el workflow nativo). Si agregas un catálogo/forma/script nuevo a
+`module_permits` para un módulo que ya tenía usuarios con ese menú activo,
+esos usuarios **no** reciben el nuevo permiso hasta que alguien vuelva a
+crear/editar su registro — no hay ningún proceso que re-sincronice
+retroactivamente a los usuarios existentes.
+
+**Cómo diagnosticar** usuarios afectados (solo lectura):
+1. Query `form_answer` por `form_id` de `CONFIGURACION_MENUS` +
+   `deleted_at: {"$exists": False}`, extraer `usuario_id` de
+   `answers[USUARIOS_OBJ_ID][usuario_id_field]` (anidado dentro de un
+   catálogo embebido — no es un campo raíz de `answers`, fácil asumir mal
+   la ruta) y `elementos` del campo correspondiente.
+2. Para cada `usuario_id` con `elementos` no vacío,
+   `get_user_catalog(uid)` regresa `{'data': [...], 'status_code': ...}` —
+   la lista está en `.get('data')`, no es directamente iterable.
+3. Comparar si el catálogo/id nuevo está en esa lista — si no, ese usuario
+   quedó sin backfill.
+
+**Cómo corregir sin reimplementar la lógica de compartir**: en vez de
+reescribir a mano qué debería compartirse, re-ejecuta la lógica de
+producción real por backend directo:
+
+```python
+from base_utils import Base   # NO linkaform_api.lkf_base.base.LKF_Base
+                               # directo — ese no trae module_permits/set_user_permissions
+
+obj = Base(settings, use_api=True)
+obj.user = {...}                          # username/user_id de la cuenta
+obj.answers = registro_ya_guardado        # el answers real de ese usuario en Mongo
+obj.set_user_permissions()                # recalcula y comparte según su `elementos` actual
+```
+
+Esto ejecuta exactamente lo mismo que correría si el usuario hubiera
+vuelto a guardar su registro, sin tocar el documento de
+`CONFIGURACION_MENUS` en sí. **Patrón general**: cuando necesites
+"re-disparar" el efecto secundario de un create/edit para registros ya
+existentes (backfill), busca primero si puedes invocar la función real del
+módulo por backend directo con los datos ya guardados — no reimplementes
+su lógica en un script aparte.
+
+**Gotcha al hacerlo en batch**: un usuario puede seguir sin backfill
+después de correr esto porque simplemente **ya no existe** (dado de baja) —
+se detecta con `get_user_by_id(uid)` regresando `{}` y los
+`get_user_forms/scripts/catalog` correspondientes regresando `status_code:
+404`. No es un bug del mecanismo de compartir, es un registro huérfano
+apuntando a un usuario borrado — no hay nada que compartir ahí.
+
 ## Antes de usar cualquier script nuevo de menús contra una cuenta real
 
 Cada cuenta tiene su propio set de scripts instalados. Prueba primero con
