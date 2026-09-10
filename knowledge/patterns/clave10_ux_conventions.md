@@ -28,6 +28,30 @@ Si es una pantalla pública o accesible por link/QR (cualquier ruta
 en una pantalla separada del lado autenticado que consulte/opere sobre el
 mismo registro.
 
+## 2. Flujos conceptualmente distintos nunca se mezclan en el mismo modal
+
+Aunque dos flujos terminen llamando al mismo backend, si el usuario los
+distingue como dos cosas diferentes, la UI debe reflejarlo con
+componentes/modales separados — no con un campo opcional agregado al
+modal del otro flujo.
+
+**Caso real que motivó la regla**: el modal de alta manual/walk-in
+("Nuevo Acceso Transportista", para un camión que llega sin registro
+previo) y la acción de ligar un pase ya creado con su llegada física son
+conceptualmente distintos para el usuario, aunque ambos terminen llamando
+la misma función de backend (`create_visit_transportista`). Se agregó un
+campo de "Buscar pase" dentro del modal de alta manual y se corrigió
+explícitamente: "nuevo acceso y ese pase son 2 cosas diferentes así que
+aquí en ese modal no metas nada de buscar pase ni lo modifiques".
+
+**Cómo aplicar**: cuando una feature nueva conecta un pase/reserva
+pre-existente con un registro operativo (bitácora, acceso, etc.), crea un
+botón y modal/pantalla **dedicados** en vez de añadir campos de búsqueda
+opcionales a un flujo de alta manual ya existente — incluso si reusar el
+mismo modal ahorra código. Si tienes duda de si dos flujos son "el mismo"
+o "distintos" para el usuario, pregunta antes de fusionarlos en la UI —
+compartir backend no implica compartir modal.
+
 ## Ver también
 - `clave10_design_system.md` — reglas visuales (color, tipografía, radios).
 - `clave10_qr_preview_publico.md` — otro gotcha de las mismas vistas
