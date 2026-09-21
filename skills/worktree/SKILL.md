@@ -46,21 +46,48 @@ git worktree add .trees/<nombre>       # crea la rama <nombre> a partir de HEAD
 grep -qx '.trees/' "$(git rev-parse --git-common-dir)/info/exclude" || echo '.trees/' >> "$(git rev-parse --git-common-dir)/info/exclude"
 ```
 
-## Paso 3 — Entrar al worktree
+## Paso 3 — Inicializar submódulos
+
+Un worktree recién creado trae los submódulos **vacíos** (`git worktree add` no los puebla).
+Si el repo tiene `.gitmodules`, desde dentro de `.trees/<nombre>`:
+
+```bash
+git submodule update --init --recursive
+```
+
+Luego actualiza cada submódulo a la punta de su rama principal:
+
+```bash
+git submodule foreach --recursive '
+  b=$(git remote show origin 2>/dev/null | sed -n "s/.*HEAD branch: //p"); b=${b:-master}
+  git checkout "$b" && git pull --ff-only origin "$b"
+'
+```
+
+Notas:
+- Se usa la rama por defecto del remoto (en `addons` es `master` para `modules` y
+  `test/sdk_testing`); si un submódulo no la tiene, `foreach` se detiene — repórtalo y sigue
+  con el resto a mano.
+- Esto deja el puntero del submódulo adelantado respecto al commit fijado, así que
+  `git status` del worktree mostrará ` M modules` / ` M test/sdk_testing`. **Es esperado**:
+  no lo commitees salvo que la tarea sea precisamente bumpear submódulos.
+- Si el repo no tiene `.gitmodules`, salta este paso sin decir nada.
+
+## Paso 4 — Entrar al worktree
 
 Usa la herramienta `EnterWorktree` con el parámetro `path` apuntando al worktree recién creado
 (ruta absoluta a `.trees/<nombre>`). **No** uses `name`: el worktree ya existe.
 
 Confirma con `pwd` que la sesión quedó dentro de `.trees/<nombre>` antes de tocar cualquier archivo.
 
-## Paso 4 — Renombrar la sesión
+## Paso 5 — Renombrar la sesión
 
 Los comandos internos del CLI no se pueden invocar desde el modelo, así que pídeselo al usuario
 con una sola línea, sin adornos:
 
 > Para renombrar la sesión, escribe: `/rename <nombre>`
 
-## Paso 5 — Ejecutar la tarea
+## Paso 6 — Ejecutar la tarea
 
 Ejecuta las instrucciones de `$ARGUMENTS` **dentro del worktree**:
 - Todas las rutas y comandos relativos al worktree, nunca al directorio original.
