@@ -33,6 +33,9 @@ Qué plugins habilitar es decisión de cada quien: Claude Code lo guarda en tu
   (scaffolding de módulo), `/lkf-claude:lkf-learn` (capturar un patrón nuevo),
   `/lkf-claude:lkf-review` (revisar código contra convenciones),
   `/lkf-claude:worktree` (trabajar una tarea aislada en un git worktree).
+- **Commands**: `/lkf-claude:commit` — commitea lo que ya está staged: hace
+  pull de la rama actual, propone el mensaje para que lo apruebes y empuja.
+  Nunca hace `git add` por su cuenta; qué entra al commit lo decides tú.
 - **MCP server `lkf-knowledge`**: `lkf_search`, `lkf_get`, `lkf_list`,
   `lkf_add`, `lkf_validate` — consulta la carpeta `knowledge/` en vivo, sin
   necesidad de Docker. Solo requiere `python3` con el módulo `venv`
