@@ -13,6 +13,7 @@ Framework BaaS en Python para interactuar con la plataforma LinkaForm vía módu
 2. **Herencia**: siempre desde `lkf_addons.addons.base.app.Base`, nunca desde `LKF_Base` directamente
 3. **Errores**: `self.LKFException({'msg': '...', 'status_code': 400})`, nunca `return {'error': ...}`
 4. **MongoDB soft-delete**: todo `find()`/`$match` debe incluir `'deleted_at': {'$exists': False}`
+5. **Versionado de forms**: al editar un form, su `_workflow.xml` o `_rules.xml`, actualizar `updated_at` y `<description>version: N</description>` en el XML del form (ver `knowledge/conventions/form_versioning.md`); si no, la utilería no detecta el cambio
 
 ## MCP server disponible: `lkf-knowledge`
 Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultable con:
