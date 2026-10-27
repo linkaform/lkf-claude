@@ -12,7 +12,7 @@
   "plugins": [
     {
       "name": "lkf-claude",
-      "description": "Skills (/lkf, /lkf-module, /lkf-learn, /lkf-review, /worktree), MCP server lkf-knowledge y knowledge base de patrones, convenciones y schemas para trabajar con linkaform_sdk",
+      "description": "Skills (/lkf, /lkf-module, /lkf-learn, /lkf-review, /clave10-pdfs, /worktree), MCP server lkf-knowledge y knowledge base de patrones, convenciones y schemas para trabajar con linkaform_sdk",
       "source": "./"
     },
     {
