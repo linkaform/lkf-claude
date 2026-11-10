@@ -2,31 +2,51 @@
 
 > Cómo estructurar la herencia entre módulos del SDK
 
-## Herencia simple (lo más común)
+## Regla
+
+En un módulo con `model.py` y `app.py`:
+
+- `model.py` hereda **solo** de `Base`.
+- `app.py` hereda **solo** de `model.py`.
+- Cuando necesitas algo de otro módulo, **no se hereda**: se carga con `self.load(...)` y el
+  objeto queda en `self.<Modulo>`.
+
+## Estructura del módulo (lo más común)
 
 ```python
+# model.py
 from lkf_addons.addons.base.app import Base
 
-class MiModulo(Base):
-    def __init__(self, settings, **kwargs):
-        super().__init__(settings, **kwargs)
+class MiModuloModel(Base):
+    def __init__(self, settings, folio_solicitud=None, sys_argv=None, use_api=False, **kwargs):
+        super().__init__(settings, sys_argv=sys_argv, use_api=use_api, **kwargs)
 ```
 
-## Herencia de otro módulo (cuando extiende funcionalidad)
+```python
+# app.py
+from .model import MiModuloModel
+
+class MiModulo(MiModuloModel):
+    def __init__(self, settings, folio_solicitud=None, sys_argv=None, use_api=False, **kwargs):
+        super().__init__(settings, sys_argv=sys_argv, use_api=use_api, **kwargs)
+```
+
+## Herencia de otro módulo: formato anterior, no usar en módulos nuevos
 
 ```python
 from lkf_addons.addons.employee.app import Employee
 
-class HRModule(Employee):
+class HRModule(Employee):   # formato anterior
     def __init__(self, settings, **kwargs):
         super().__init__(settings, **kwargs)
-        # Ahora tiene todos los campos y métodos de Employee
-        self.f.update({
-            'campo_extra': 'OBJECTID...',
-        })
 ```
 
-**Cuándo usar**: cuando el nuevo módulo ES un tipo de otro módulo (HRModule ES un Employee).
+Es el formato viejo (herencia múltiple tipo `class AccesosModel(Employee, Location, Vehiculo,
+Base)`). Sigue existiendo en módulos que no se han migrado, pero un módulo nuevo no lo usa:
+trae todos los atributos y métodos del otro módulo planos sobre `self`, mezcla sus
+`__init__` y puede abrir efectos secundarios que no pediste. Por ejemplo, heredar de
+`Oracle` abre una conexión a Oracle en cada ejecución, incluso en scripts que no la usan.
+Si lo necesitas, usa `self.load()`.
 
 ## Carga dinámica con self.load() (dependencia lateral)
 
@@ -41,7 +61,13 @@ class Expenses(Base):
         # self.Employee disponible desde aquí
 ```
 
-**Cuándo usar**: cuando el módulo NECESITA otro módulo pero no ES ese módulo.
+**Cuándo usar**: siempre que el módulo necesite algo de otro módulo, sea o no "un tipo de" ese
+módulo. `self.load()` importa `lkf_addons.addons.<modulo>.app` e instancia la clase con los
+mismos `settings`, `sys_argv` y `use_api`, y la deja en `self.<Modulo>`.
+
+Carga solo lo que la lógica use: cada módulo cargado se instancia completo. Si solo se
+necesita en algunos métodos, cárgalo dentro del método (con `hasattr` ya evita duplicar la carga).
+Agrega el módulo cargado a `depends` en el `__init__.py` del paquete.
 
 ## Múltiples dependencias
 
@@ -57,9 +83,10 @@ class ComplexModule(Base):
 ## Regla de decisión
 
 ```
-¿El nuevo módulo ES un subtipo del otro?  → Herencia directa
-¿El nuevo módulo USA al otro?             → self.load()
+¿Necesito algo de otro módulo?            → self.load()
 ¿Dependencia circular potencial?          → self.load() siempre
+¿Es el modelo (model.py) o la app?        → model.py hereda de Base; app.py de model.py
+¿Quiero heredar de otro módulo?           → No. self.load()
 ```
 
 ## Gotcha: el repo legacy (`linkaform/addons`) todavía usa herencia múltiple

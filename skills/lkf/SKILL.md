@@ -12,7 +12,7 @@ Activa el modo de desarrollo LinkaForm SDK. A partir de ahora:
 
 2. **Aplica siempre** estas reglas fundamentales:
    - IDs de campos: `self.f['campo']` o `self.mf['campo']`, nunca ObjectIds crudos
-   - Herencia: siempre desde `Base` (`from lkf_addons.addons.base.app import Base`)
+   - Herencia: `model.py` hereda solo de `Base` (`from lkf_addons.addons.base.app import Base`) y `app.py` solo de `model.py`; para usar otro módulo, `self.load(module='X', **self.kwargs)` (queda en `self.X`)
    - Errores: `self.LKFException({'msg': '...', 'status_code': 400})`, nunca `return {'error': ...}`
    - MongoDB: todo `find()`/`$match` incluye `'deleted_at': {'$exists': False}`
    - Catálogos: siempre los 3 atributos `_CAT`, `_CAT_ID`, `_CAT_OBJ_ID`

@@ -10,10 +10,11 @@ Framework BaaS en Python para interactuar con la plataforma LinkaForm vía módu
 
 ## Reglas fundamentales (nunca romper)
 1. **IDs de campos**: siempre `self.f['campo']` o `self.mf['campo']`, nunca ObjectIds crudos
-2. **Herencia**: siempre desde `lkf_addons.addons.base.app.Base`, nunca desde `LKF_Base` directamente
+2. **Herencia**: `model.py` hereda solo de `lkf_addons.addons.base.app.Base` (nunca de `LKF_Base`) y `app.py` solo de `model.py`. Para usar otro módulo: `self.load(module='Employee', **self.kwargs)`, no herencia
 3. **Errores**: `self.LKFException({'msg': '...', 'status_code': 400})`, nunca `return {'error': ...}`
 4. **MongoDB soft-delete**: todo `find()`/`$match` debe incluir `'deleted_at': {'$exists': False}`
 5. **Versionado de forms**: al editar un form, su `_workflow.xml` o `_rules.xml`, actualizar `updated_at` y `<description>version: N</description>` en el XML del form (ver `knowledge/conventions/form_versioning.md`); si no, la utilería no detecta el cambio
+6. **Pull requests en `clave10` y `clave10-app`: NUNCA**, ni subir ramas para prepararlos. Solo con **doble confirmación** explícita del usuario (ver `knowledge/conventions/pull_requests.md`)
 
 ## MCP server disponible: `lkf-knowledge`
 Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultable con:
@@ -27,13 +28,16 @@ Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultab
 
 ## Skills disponibles
 - `/lkf` — referencia completa del SDK + activar modo linkaform
-- `/lkf-module <nombre>` — scaffolding de módulo nuevo
+- `/lkf-module <nombre>` — scaffolding de módulo nuevo desde cero (model.py + app.py). Si parte de una cuenta existente, usar el agente `clave10-nuevo-modulo`
 - `/lkf-learn` — capturar y guardar un nuevo patrón
 - `/lkf-review` — revisar código contra convenciones del SDK
 - `/clave10-account-scripts-sync` — sync de scripts de módulos por cuenta de cliente (batch), incluye alta/refresco controlado de `accounts.json`
 - `/clave10-prod-update` — actualiza el contenedor Docker de producción de una o varias cuentas (`./lkf update prod <id>`)
 - `/clave10-pdfs` — sistema de diseño de PDFs y reportes de Clave 10 (librería ReportLab: header, KPIs, tablas, footer "Operación segura.")
 - `/worktree <instrucciones>` — crea un worktree aislado en `.trees/<nombre>` y ejecuta ahí la tarea
+
+## Agentes disponibles
+- `clave10-nuevo-modulo` — arma un módulo nuevo a partir de una cuenta de cliente: paquete `model.py` + `app.py` (solo `Base`, otros módulos con `self.load`), baja formas, catálogos y scripts con `lkfaddons download` y convierte los scripts sueltos en métodos de la clase. Sigue `knowledge/conventions/new_module_checklist.md`.
 
 ## Rutas de repos
 Nunca hardcodear `~/lkf/<repo>` en scripts de skills. Usar el resolver:
@@ -50,7 +54,10 @@ lkf_addons/addons/
   base/          ← Clase Base (todos heredan de aquí)
   _template/     ← Plantilla para módulos nuevos
   <modulo>/
-    app.py
-    model.py     ← (si existe) queries y lógica de negocio
-    items/scripts|forms|catalogs|reports/
+    __init__.py  ← depends = ['base', ...]
+    model.py     ← <Modulo>Model(Base): IDs de forms, catálogos y campos (self.f)
+    app.py       ← <Modulo>(<Modulo>Model): lógica de negocio
+    items/forms|catalogs|reports|scripts/   ← formas y catálogos: base del módulo
+
+modules/<modulo>/items/scripts/<Carpeta>/    ← personalización: scripts + <modulo>_utils.py
 ```

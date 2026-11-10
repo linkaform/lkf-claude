@@ -46,3 +46,4 @@ Muestra el hash del commit y confirma que el push fue exitoso.
 - **NUNCA uses `--no-verify`**.
 - El pull siempre es de la rama en la que está el proyecto, no de `main` ni `master` por defecto.
 - Si algo falla, reporta el error claramente y no continúes.
+- **NUNCA abras un pull request** (ni subas ramas para uno) en `clave10` ni `clave10-app` sin doble confirmación explícita del usuario (ver `knowledge/conventions/pull_requests.md`).

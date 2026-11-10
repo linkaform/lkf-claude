@@ -21,13 +21,17 @@ self.load(module='Product', module_class='Warehouse', import_as='WH', **self.kwa
 self.WH.get_warehouse(code='ALM-01')
 ```
 
-## Cuándo usar self.load() vs herencia directa
+## Cuándo cargar el módulo
 
-| Situación | Usar |
+Un módulo nunca hereda de otro: `model.py` hereda solo de `Base` y `app.py` solo de `model.py`
+(ver `conventions/inheritance.md`). Lo único que cambia es dónde haces el `self.load()`:
+
+| Situación | Dónde cargar |
 |---|---|
-| Siempre necesitas el módulo | Herencia directa (`class Expenses(Base)` + instanciar Employee en `__init__`) |
+| Siempre necesitas el módulo | `self.load()` en el `__init__` |
 | Solo en algunos métodos | `self.load()` dentro del método |
-| Dependencia circular potencial | `self.load()` lazy |
+| Dependencia circular potencial | `self.load()` dentro del método (lazy) |
+| No lo usa ninguna lógica | No lo cargues |
 
 ## En __init__ (carga siempre disponible)
 
@@ -41,4 +45,7 @@ class MiModulo(Base):
 ## Notas
 - `self.kwargs` debe pasarse para que el módulo cargado tenga el mismo contexto (account, user, etc.)
 - El módulo cargado hereda el mismo `settings` y credenciales
-- No abuses de `self.load()` en loops — es costoso; carga una vez en `__init__`
+- Cada módulo cargado se instancia completo la primera vez (puede abrir conexiones, como `Oracle`,
+  o consultar IDs de formas). Carga solo lo que la lógica use
+- Llamar `self.load()` otra vez con el mismo `import_as` no re-instancia: si `self.<Modulo>` ya existe, no hace nada
+- Agrega el módulo cargado a `depends` en el `__init__.py` del paquete

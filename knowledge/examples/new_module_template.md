@@ -2,13 +2,21 @@
 
 > Ejemplo completo y funcional de un módulo nuevo: "Proveedores"
 
-## app.py
+Si un catálogo o una forma referencia a otro del mismo módulo (`{{ catalog.X.id }}`), la dependencia va en
+`install_order` de `items/<tipo>/__init__.py` (por ejemplo `items/catalogs/__init__.py`:
+`install_order = ['tipo_proveedor']`). Ver `conventions/new_module_checklist.md` → "Orden de instalación".
+
+Se divide en dos archivos: `model.py` (IDs de forms, catálogos y campos; hereda **solo** de `Base`)
+y `app.py` (lógica; hereda **solo** de `model.py`). Para usar otro módulo se usa `self.load()`,
+no herencia. Ver `conventions/inheritance.md` y `conventions/new_module_checklist.md`.
+
+## model.py
 
 ```python
 from lkf_addons.addons.base.app import Base
 
 
-class Proveedores(Base):
+class ProveedoresModel(Base):
 
     def __init__(self, settings, folio_solicitud=None, sys_argv=None, use_api=False, **kwargs):
         super().__init__(settings, sys_argv=sys_argv, use_api=use_api, **kwargs)
@@ -35,6 +43,19 @@ class Proveedores(Base):
             'fecha_alta':    '60a1b2c3d4e5f6a7b8c9d007',
             'comentarios':   '60a1b2c3d4e5f6a7b8c9d008',
         })
+```
+
+## app.py
+
+```python
+from .model import ProveedoresModel
+
+
+class Proveedores(ProveedoresModel):
+
+    def __init__(self, settings, folio_solicitud=None, sys_argv=None, use_api=False, **kwargs):
+        super().__init__(settings, sys_argv=sys_argv, use_api=use_api, **kwargs)
+        # Otros módulos: self.load(module='Employee', **self.kwargs)  → self.Employee
 
     # ─── Queries ────────────────────────────────────────────────────────────
 
