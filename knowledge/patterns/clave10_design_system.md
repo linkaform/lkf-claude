@@ -146,6 +146,7 @@ token del sistema.
 
 ## Ver también
 
+- `clave10_dark_mode.md` — tokens, reglas y pruebas del modo oscuro en el front.
 - `clave10_front_explorer_screen.md` — convenciones de pantalla completa
   (header, filtros, vistas).
 - `clave10_panel_lateral_detalle.md` — patrón de panel lateral de detalle.

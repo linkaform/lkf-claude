@@ -1,69 +1,65 @@
 {
-  "_comment": "Registro versionado de las cuentas de clientes que SI tienen el modulo Clave10 instalado (username + account_id, sin secretos). Es la unica lista de la que bootstrap_accounts.py puede tomar cuentas -- nunca se toman cuentas nuevas directo de local_settings.py sin pasar antes por aqui. Para dar de alta una cuenta Clave10 nueva: agregala aqui (username + account_id) en un commit normal, con Paco confirmando que esa cuenta si tiene el modulo. El apikey/openrouter/couch de cada quien se rellena localmente y nunca se sube a git.",
-
+  "_comment": "Catalogo versionado de las cuentas que SI tienen Clave10 (sin secretos). Es la lista default de sync_accounts.py cuando no tienes ~/.config/clave10/accounts.json. Las credenciales salen de addons/secrets/accounts.ini via ./lkf workwith. 'workwith_domain' solo cuando la seccion del .ini se llama distinto de la key. Dar de alta una cuenta aqui es un commit deliberado.",
   "poc_soter": {
     "username": "poc@soter.com",
     "account_id": "17372",
-    "apikey": ""
+    "workwith_domain": "pocsoter"
   },
   "seguridad": {
     "username": "seguridad@linkaform.com",
-    "account_id": "10",
-    "apikey": ""
+    "account_id": "10"
   },
   "josepato": {
     "username": "josepato@linkaform.com",
-    "account_id": "126",
-    "apikey": ""
+    "account_id": "126"
   },
   "litoprocess": {
     "username": "litoprocess",
-    "account_id": "29572",
-    "apikey": ""
+    "account_id": "29572"
   },
   "grupoviso": {
     "username": "grupoviso",
-    "account_id": "19217",
-    "apikey": ""
+    "account_id": "19217"
   },
   "progela": {
     "username": "progela",
-    "account_id": "29120",
-    "apikey": ""
+    "account_id": "29120"
   },
   "gfh": {
     "username": "gfh",
-    "account_id": "29954",
-    "apikey": ""
+    "account_id": "29954"
   },
   "unitedbrands": {
     "username": "unitedbrands",
-    "account_id": "30490",
-    "apikey": ""
+    "account_id": "30490"
   },
   "hlmando": {
     "username": "hlmando",
-    "account_id": "30335",
-    "apikey": ""
+    "account_id": "30335"
   },
   "palcersecurity": {
     "username": "palcersecurity",
-    "account_id": "16606",
-    "apikey": ""
+    "account_id": "16606"
   },
   "hergo": {
     "username": "hergo",
-    "account_id": "31320",
-    "apikey": ""
+    "account_id": "31320"
   },
   "testing": {
     "username": "testing",
-    "account_id": "31359",
-    "apikey": ""
+    "account_id": "31359"
   },
   "ventas": {
     "username": "ventas@clave10.com",
     "account_id": "31374",
-    "apikey": ""
+    "workwith_domain": "ventasclave10"
+  },
+  "chubb": {
+    "username": "chubb",
+    "account_id": "31455"
+  },
+  "distritopanorama": {
+    "username": "distritopanorama",
+    "account_id": "31468"
   }
 }
