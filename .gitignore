@@ -5,3 +5,7 @@ docker/claude-code/.env
 # sus permisos locales. No se versiona — es decisión de quien instala.
 .claude/settings.json
 .claude/settings.local.json
+
+# Bytecode de Python
+__pycache__/
+*.pyc
