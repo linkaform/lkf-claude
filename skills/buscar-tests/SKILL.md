@@ -26,11 +26,12 @@ De la descripción saca, aunque sea tentativamente:
 - **Script y funciones del backend** involucrados (`do_out`,
   `update_full_pass`, `get_paquetes`…). Si la persona solo describe el
   síntoma, búscalos tú con `grep` del texto, campo u `option` que menciona,
-  en los dos lugares donde vive el backend de Accesos (solo lectura):
-  - `~/clave10-sdk/addons/modules/accesos/items/scripts/Accesos/`: los
+  en los dos lugares donde vive el backend de Accesos (solo lectura; las
+  rutas completas las imprime el índice del Paso 2 en su primera línea):
+  - `<addons>/modules/accesos/items/scripts/Accesos/`: los
     scripts de entrada (`incidencias.py`, `paqueteria.py`…) y
     `accesos_utils.py`. El script recibe un `option` y despacha a un método.
-  - `~/clave10-sdk/addons/lkf_addons/addons/accesos/app.py`: donde está la
+  - `<addons>/lkf_addons/addons/accesos/app.py`: donde está la
     lógica de muchos de esos métodos (`update_full_pass`,
     `create_incidence`…). Si el método no está en `accesos_utils.py`, está
     aquí.
@@ -49,19 +50,29 @@ Bitácora?") antes de buscar.
 
 ## Paso 2. Buscar en el código
 
-Corre el índice desde la raíz de sdk_testing:
+Corre el índice. La ruta del script es relativa a la carpeta de esta skill y
+funciona desde cualquier carpeta:
 
 ```bash
-python3 .claude/skills/buscar-tests/scripts/indice_tests.py            # todo
-python3 .claude/skills/buscar-tests/scripts/indice_tests.py paqueteria # solo rutas que contengan "paqueteria"
+python3 scripts/indice_tests.py            # todo
+python3 scripts/indice_tests.py paqueteria # solo rutas que contengan "paqueteria"
 ```
+
+Las dos primeras líneas dicen dónde encontró `sdk_testing` y el backend
+(`<addons>`): usa esas rutas en todo lo demás. Las ubica el resolver de
+workspace del plugin, que busca hacia arriba desde la carpeta actual y luego
+en raíces comunes como `~/lkf`. Si la ruta no es la copia en la que trabaja
+la persona (p. ej. sale `~/lkf/addons` y trabaja en `~/clave10-sdk`), para y
+díselo: lo arregla una vez por máquina con `python3 lib/lkf_workspace.py
+--init` (desde la carpeta del plugin) o con la variable `LKF_ADDONS`. Buscar
+en otra copia daría tests o código viejos.
 
 Cada línea es `ruta::test | tipo | TB-XXX | bug(folio) | primera línea del
 docstring`, y arriba de cada archivo va el docstring del módulo, que nombra
 el script y las funciones que prueba. Con eso ubicas candidatos por sección
 (carpeta), por función y por TB.
 
-Después confirma con `grep -rn` en `accesos/` las funciones que encontraste
+Después confirma con `grep -rn` en `<sdk_testing>/accesos/` las funciones que encontraste
 en el Paso 1: un test puede llamar a la función desde un fixture o helper
 (`fixtures.py`, `helpers.py`, `data/`) sin nombrarla en su docstring. Lee el
 docstring completo de cada candidato para saber **qué valida de verdad**.
@@ -127,10 +138,11 @@ pronto y solo escala si hace falta.
 Los tests se corren dentro del contenedor de pruebas. Dale los comandos
 listos para copiar, del más chico al más grande. El contenedor abre en
 `/srv/lkf_test` (que es `addons/test`), así que el primer paso adentro es
-entrar a `sdk_testing`:
+entrar a `sdk_testing`. En `<addons>` pon la ruta que imprimió el índice
+(normalmente `~/clave10-sdk/addons`):
 
 ```bash
-cd ~/clave10-sdk/addons && ./lkf start test
+cd <addons> && ./lkf start test
 ```
 
 ```bash
@@ -159,7 +171,7 @@ los tests ligados a ese ticket.
 Cuando recomiendes tests `integration` o `e2e`, añade una línea: corren
 contra preprod y crean datos reales (sin teardown). El `conftest.py`
 bloquea la corrida si el entorno activo no es preprod; en ese caso se
-cambia desde el host con `./lkf workon preprod` (en `~/clave10-sdk/addons`).
+cambia desde el host con `./lkf workon preprod` (en `<addons>`).
 No sugieras `--allow-prod-integration`.
 
 ### Huecos de cobertura

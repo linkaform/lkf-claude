@@ -8,11 +8,13 @@ Imprime un índice de todos los tests de sdk_testing, uno por línea:
 Arriba de cada archivo va el docstring del módulo (script y funciones que
 prueba). Solo lee el código con ast: no importa nada ni corre pytest.
 
-Uso (desde la raíz de sdk_testing):
-    python3 .claude/skills/buscar-tests/scripts/indice_tests.py [filtro]
+Uso (desde cualquier carpeta):
+    python3 scripts/indice_tests.py [filtro]
 
 El filtro opcional deja solo los archivos cuya ruta lo contenga
-(p. ej. "paqueteria" o "entradas_salidas").
+(p. ej. "paqueteria" o "entradas_salidas"). sdk_testing se ubica con el
+resolver de workspace del plugin: <addons>/test/sdk_testing. La primera
+línea impresa dice qué rutas usó para sdk_testing y el backend.
 """
 
 import ast
@@ -20,7 +22,11 @@ import re
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "lib"))
+from lkf_workspace import workspace  # noqa: E402
+
+ADDONS = workspace().path("addons")
+RAIZ = ADDONS / "test" / "sdk_testing"
 TIPOS = ("unit", "integration", "e2e")
 TB = re.compile(r"TB-\d{3}")
 
@@ -54,10 +60,16 @@ def tests_de(arbol):
 
 def main():
     filtro = sys.argv[1] if len(sys.argv) > 1 else ""
+    if not (RAIZ / "accesos").is_dir():
+        sys.exit(f"No encontré sdk_testing en {RAIZ}: falta el submódulo addons/test/sdk_testing "
+                 "(git submodule update --init --recursive)")
     archivos = sorted(
         p for p in RAIZ.rglob("test_*.py")
         if "_test_template" not in p.parts and ".git" not in p.parts and filtro in str(p)
     )
+    print(f"sdk_testing: {RAIZ}")
+    print(f"backend: {ADDONS / 'lkf_addons/addons/accesos/app.py'} y "
+          f"{ADDONS / 'modules/accesos/items/scripts/Accesos/'}")
     total = 0
     for archivo in archivos:
         ruta = archivo.relative_to(RAIZ)
