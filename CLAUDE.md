@@ -14,7 +14,7 @@ Framework BaaS en Python para interactuar con la plataforma LinkaForm vía módu
 3. **Errores**: `self.LKFException({'msg': '...', 'status_code': 400})`, nunca `return {'error': ...}`
 4. **MongoDB soft-delete**: todo `find()`/`$match` debe incluir `'deleted_at': {'$exists': False}`
 5. **Versionado de forms**: al editar un form, su `_workflow.xml` o `_rules.xml`, actualizar `updated_at` y `<description>version: N</description>` en el XML del form (ver `knowledge/conventions/form_versioning.md`); si no, la utilería no detecta el cambio
-6. **Pull requests en `clave10` y `clave10-app`: NUNCA**, ni subir ramas para prepararlos. Solo con **doble confirmación** explícita del usuario (ver `knowledge/conventions/pull_requests.md`)
+6. **Pull requests en `clave10` y `clave10-app`: NUNCA**, ni subir ramas para prepararlos. Solo con **doble confirmación** explícita del usuario. Excepción: tareas del plan de Contratistas en `clave10` con base `staging`, una sola confirmación y revisor del plan (ver `knowledge/conventions/pull_requests.md`)
 
 ## MCP server disponible: `lkf-knowledge`
 Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultable con:
