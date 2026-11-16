@@ -102,8 +102,12 @@ Para ubicar una pantalla sin ficha: busca su texto visible (`grep -n
 
 ## Decisiones que aplican a todas las tareas
 
-- **Backend único en Sanic**: lógica en `lkf-sanic-apps` (`*_sdk.py`). En
-  `addons` solo XML de formas/catálogos y puentes sin lógica para workflows.
+- **Backend único en Sanic, dentro del módulo `accesos`**: lógica y rutas en
+  `lkf-sanic-apps/addons/accesos`, scripts `*_sdk.py` en `sdk-modules-sanic`
+  (accesos). Desde cero: el módulo viejo `addons/contratistas` de Sanic no se
+  usa. En `addons` solo XML de formas/catálogos nuevos y puentes sin lógica
+  para workflows; la forma y el catálogo "Contratistas" existentes no se tocan
+  (los usa `produccion_pci`).
 - **Clientes y Contratistas son una relación vista desde dos lados**: mismo
   componente, etiquetas espejo (`kLbl()` en el diseño).
 - Componentes base se hacen una vez y se reusan: tabla y modales (F0-05),
