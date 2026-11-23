@@ -98,6 +98,8 @@ front = workspace().path("front", required=False)   # None si no está
 - `modules/` — conocimiento específico por módulo
 - `examples/` — plantillas completas y funcionales
 - `schemas/` — shape real de las colecciones de MongoDB
+- `operacion/` — arreglar items en cuentas de clientes: formas, reglas, workflows,
+  catálogos, registros e instalación de scripts (empieza en `operacion.md`)
 
 ### Los dos niveles del knowledge
 
