@@ -16,6 +16,23 @@ Se necesita **doble confirmación**, en dos mensajes distintos del usuario:
 Una confirmación previa (de otra rama, de otro repo o de una pregunta general) no cuenta. Si hay duda,
 no se abre.
 
+## Excepción: plan de Contratistas en `clave10` (base `staging`)
+El front de Contratistas se desarrolla sobre `staging` de `clave10` (no sale a producción hasta que
+`staging` se mergea a `master`). Para esas tareas:
+
+- Rama del plan con formato `tipo/<id>-<desc>` (ej. `feat/me-06-empresa-documentos`), creada desde
+  `origin/staging`. Se puede subir (`git push -u origin <rama>`) sin confirmación extra.
+- El PR se abre cuando el usuario lo pide, con **una sola confirmación**: mostrar rama, base y commits
+  y preguntar una vez.
+- Base **siempre `staging`**. Revisor obligatorio: el de la columna "Revisor" del plan
+  (`gh pr create --base staging --reviewer <usuario>`). Usuarios: Paco = `pacosotto`, Maricruz =
+  `MaricruzAlvarado`, Karina = `KarinaMoreno21`; Alain (`Alain-MV`) no revisa.
+- Título sin ID de tarea, como un commit (`feat: documentos de la empresa`). Cuerpo:
+  `## Qué cambia` y `## Tarea` (ID · Revisor, Spec, Ficha de diseño). Índice de fichas:
+  `knowledge/modules/contratistas/contratistas.md`.
+
+Un PR de `clave10` con base `master`, y cualquier PR de `clave10-app`, siguen con la doble confirmación.
+
 ## Otros repos
 Para el resto de repos (addons, lkf-sanic-apps, modules...) rige lo normal: abrir el PR solo cuando el
 usuario lo pide, y mensajes/descripciones sin líneas de atribución a Claude (`Co-Authored-By`,

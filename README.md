@@ -32,7 +32,8 @@ Qué plugins habilitar es decisión de cada quien: Claude Code lo guarda en tu
 - **Skills**: `/lkf-claude:lkf` (modo desarrollo SDK), `/lkf-claude:lkf-module`
   (scaffolding de módulo), `/lkf-claude:lkf-learn` (capturar un patrón nuevo),
   `/lkf-claude:lkf-review` (revisar código contra convenciones),
-  `/lkf-claude:worktree` (trabajar una tarea aislada en un git worktree).
+  `/lkf-claude:worktree` (trabajar una tarea aislada en un git worktree),
+  `/lkf-claude:buscar-tests` (qué tests de sdk_testing correr según un problema).
 - **Agents**: `clave10-nuevo-modulo` — arma un módulo nuevo a partir de una
   cuenta de cliente (paquete `model.py` + `app.py`, formas, catálogos y scripts
   bajados con `lkfaddons download`, scripts convertidos en métodos de la clase).
@@ -97,6 +98,8 @@ front = workspace().path("front", required=False)   # None si no está
 - `modules/` — conocimiento específico por módulo
 - `examples/` — plantillas completas y funcionales
 - `schemas/` — shape real de las colecciones de MongoDB
+- `operacion/` — arreglar items en cuentas de clientes: formas, reglas, workflows,
+  catálogos, registros e instalación de scripts (empieza en `operacion.md`)
 
 ### Los dos niveles del knowledge
 

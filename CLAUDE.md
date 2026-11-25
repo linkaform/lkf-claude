@@ -14,7 +14,7 @@ Framework BaaS en Python para interactuar con la plataforma LinkaForm vía módu
 3. **Errores**: `self.LKFException({'msg': '...', 'status_code': 400})`, nunca `return {'error': ...}`
 4. **MongoDB soft-delete**: todo `find()`/`$match` debe incluir `'deleted_at': {'$exists': False}`
 5. **Versionado de forms**: al editar un form, su `_workflow.xml` o `_rules.xml`, actualizar `updated_at` y `<description>version: N</description>` en el XML del form (ver `knowledge/conventions/form_versioning.md`); si no, la utilería no detecta el cambio
-6. **Pull requests en `clave10` y `clave10-app`: NUNCA**, ni subir ramas para prepararlos. Solo con **doble confirmación** explícita del usuario (ver `knowledge/conventions/pull_requests.md`)
+6. **Pull requests en `clave10` y `clave10-app`: NUNCA**, ni subir ramas para prepararlos. Solo con **doble confirmación** explícita del usuario. Excepción: tareas del plan de Contratistas en `clave10` con base `staging`, una sola confirmación y revisor del plan (ver `knowledge/conventions/pull_requests.md`)
 
 ## MCP server disponible: `lkf-knowledge`
 Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultable con:
@@ -34,6 +34,7 @@ Código en `lkf-claude/mcp/`, conocimiento en `lkf-claude/knowledge/`. Consultab
 - `/clave10-account-scripts-sync` — sync de scripts/formas de módulos por cuenta de cliente (batch) vía `./lkf workwith`
 - `/clave10-prod-update` — actualiza el contenedor Docker de producción de una o varias cuentas (`./lkf update prod <id>`)
 - `/clave10-pdfs` — sistema de diseño de PDFs y reportes de Clave 10 (librería ReportLab: header, KPIs, tablas, footer "Operación segura.")
+- `/buscar-tests` — dado un problema descrito en palabras, dice qué tests de sdk_testing lo cubren, su estado en Notion y cómo correrlos; si no hay cobertura, crea un Task para QA (Citlali)
 - `/worktree <instrucciones>` — crea un worktree aislado en `.trees/<nombre>` y ejecuta ahí la tarea
 
 ## Agentes disponibles

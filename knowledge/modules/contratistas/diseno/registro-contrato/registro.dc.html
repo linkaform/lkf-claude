@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/radii.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/elevation.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/tokens/motion.css">
+  <link rel="stylesheet" href="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/styles.css">
+  <script src="_ds/clave-10-design-system-b774bdae-36aa-4c9a-9049-afe0a835bd57/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: #F8FAFC; font-family: Arial, Helvetica, sans-serif; }
+    body, body * { font-family: Arial, Helvetica, sans-serif; }
+    a { color: #2F80ED; text-decoration: none; }
+    a:hover { color: #1E6FDB; text-decoration: underline; }
+    @keyframes c10in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @keyframes c10pop { 0% { opacity: 0; transform: scale(.85); } 100% { opacity: 1; transform: none; } }
+    @keyframes c10scan { 0% { top: 4px; } 50% { top: 100px; } 100% { top: 4px; } }
+    @keyframes c10barra { 0% { left: -34%; } 100% { left: 102%; } }
+  </style>
+</helmet>
+
+<div style="min-height:100vh;background:#F8FAFC;color:#171717;display:flex;align-items:center;justify-content:center;padding:40px 24px">
+
+  <sc-if value="{{ esLogin }}" hint-placeholder-val="{{ true }}">
+    <div style="width:100%;max-width:400px;background:#ffffff;border:1px solid #E5E7EB;border-radius:16px;box-shadow:var(--shadow-lg);padding:40px 32px 32px;display:flex;flex-direction:column;gap:20px;animation:c10in 250ms ease-in-out">
+      <img src="assets/logo.png" alt="Clave 10" style="display:block;width:168px;height:auto;margin:0 auto 12px">
+      <input type="text" value="{{ usuario }}" onChange="{{ setUsuario }}" placeholder="Usuario" style="width:100%;height:48px;box-sizing:border-box;padding:0 16px;border:1px solid transparent;border-radius:8px;background:#F1F5F9;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;background:#ffffff;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+      <span style="position:relative;display:block">
+        <input type="{{ tipoPass }}" value="{{ pass }}" onChange="{{ setPass }}" placeholder="Contraseña" style="width:100%;height:48px;box-sizing:border-box;padding:0 48px 0 16px;border:1px solid transparent;border-radius:8px;background:#F1F5F9;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;background:#ffffff;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+        <button onClick="{{ verPass }}" title="{{ tituloPass }}" aria-label="{{ tituloPass }}" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:none;border-radius:8px;cursor:pointer;background:transparent;color:#94A3B8;transition:all 150ms ease-in-out" style-hover="background:#E2E8F0;color:#475569">{{ iconoPass }}</button>
+      </span>
+      <button onClick="{{ entrar }}" style="width:100%;height:48px;border:none;border-radius:8px;cursor:pointer;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:700;background:#2F80ED;color:#ffffff;transition:background 150ms ease-in-out" style-hover="background:#1E6FDB">Iniciar sesión</button>
+      <a href="#" onClick="{{ noop }}" style="align-self:center;font-size:14px;font-weight:700">¿Olvidaste tu contraseña?</a>
+      <span style="align-self:center;font-size:14px;color:#475569">¿No tienes cuenta? <a href="#" onClick="{{ irPaso1 }}" style="font-weight:700">Regístrate aquí</a></span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ esWizard }}" hint-placeholder-val="{{ false }}">
+    <div style="width:100%;max-width:{{ anchoWizard }};display:flex;flex-direction:column;gap:20px">
+      <img src="assets/logo.png" alt="Clave 10" style="display:block;width:148px;height:auto;margin:0 auto">
+
+      <div style="background:#ffffff;border:1px solid #E5E7EB;border-radius:16px;box-shadow:var(--shadow-lg);padding:32px;display:flex;flex-direction:column;gap:24px">
+
+        <span style="display:flex;align-items:center;gap:6px;align-self:flex-end">
+          <sc-for list="{{ tramos }}" as="t" hint-placeholder-count="4">
+            <span title="{{ t.label }}" style="display:block;width:34px;height:4px;border-radius:9999px;transition:background 250ms ease-in-out;background:{{ t.color }}"></span>
+          </sc-for>
+        </span>
+
+        <span style="display:flex;align-items:center;gap:14px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#EFF6FF;color:#2F80ED;flex-shrink:0">{{ iconoPaso }}</span>
+          <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+            <span style="font-size:22px;font-weight:700;color:#0F172A;letter-spacing:-.02em;text-wrap:pretty">{{ tituloPaso }}</span>
+            
+          </span>
+        </span>
+
+        <sc-if value="{{ esPaso1 }}" hint-placeholder-val="{{ true }}">
+          <span style="display:flex;flex-direction:column;gap:20px;animation:c10in 250ms ease-in-out">
+            <span style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+              <sc-for list="{{ perfiles }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.elegir }}" style="display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 12px; cursor: pointer; text-align: left; font-family: Arial, Helvetica, sans-serif; transition: all 150ms ease-in-out; border: 2px solid {{ o.borde }}; background: {{ o.fondo }}; flex-direction: column">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;flex-shrink:0;transition:all 150ms ease-in-out;background:{{ o.tinte }};color:{{ o.acento }}">{{ o.icon }}</span>
+                  <span style="font-size:15px;font-weight:{{ o.peso }};color:{{ o.color }}">{{ o.label }}</span>
+                </button>
+              </sc-for>
+            </span>
+            
+          </span>
+        </sc-if>
+
+        <sc-if value="{{ esPaso2 }}" hint-placeholder-val="{{ false }}">
+          <span style="display:flex;flex-direction:column;gap:20px;animation:c10in 250ms ease-in-out">
+            <span style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+              <sc-for list="{{ personas }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.elegir }}" style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:12px;cursor:pointer;text-align:left;font-family:Arial, Helvetica, sans-serif;transition:all 150ms ease-in-out;border:2px solid {{ o.borde }};background:{{ o.fondo }}">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;transition:all 150ms ease-in-out;background:{{ o.tinte }};color:{{ o.acento }}">{{ o.icon }}</span>
+                  <span style="font-size:15px;font-weight:700;color:{{ o.color }}">{{ o.label }}</span>
+                  <span style="font-size:13px;line-height:1.5;color:#64748B;text-wrap:pretty">{{ o.detalle }}</span>
+                </button>
+              </sc-for>
+            </span>
+            <span style="display:flex;gap:10px;padding:16px 18px;border-radius:12px;background:#EFF6FF;border:1px solid #BFDBFE">
+              <span style="font-size:13px;line-height:1.55;color:#1E40AF;text-wrap:pretty"><span style="font-weight:700">Nota:</span> El tipo de persona determina los datos fiscales que te pediremos. Podrás corregirlo desde configuraciones mientras tu perfil no tenga contratos activos.</span>
+            </span>
+          </span>
+        </sc-if>
+
+        <sc-if value="{{ esPaso3 }}" hint-placeholder-val="{{ false }}">
+          <span style="display:flex;flex-direction:column;gap:20px;animation:c10in 250ms ease-in-out">
+
+            <sc-if value="{{ ocrVacio }}" hint-placeholder-val="{{ true }}">
+              <span style="display:flex;flex-direction:column;gap:14px">
+                <button onClick="{{ simular }}" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;padding:48px 24px;border:2px dashed #BFDBFE;border-radius:12px;background:#F8FBFF;cursor:pointer;font-family:Arial, Helvetica, sans-serif;transition:all 150ms ease-in-out" style-hover="border-color:#2F80ED;background:#EFF6FF">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:12px;background:#DBEAFE;color:#2F80ED;margin-bottom:4px">{{ iconoSubir }}</span>
+                  <span style="font-size:16px;font-weight:700;color:#0F172A;text-wrap:pretty">Arrastra tu aviso de registro REPSE aquí</span>
+                  <span style="font-size:14px;color:#475569">o haz clic para seleccionar archivo</span>
+                  <span style="font-size:12px;color:#94A3B8">PDF · Máximo 10 MB</span>
+                </button>
+                <span style="display:flex;gap:10px;padding:16px 18px;border-radius:12px;background:#EFF6FF;border:1px solid #BFDBFE">
+                  <span style="font-size:13px;line-height:1.55;color:#1E40AF;text-wrap:pretty"><span style="font-weight:700">Nota:</span> ¿No tienes tu aviso de registro? Consúltalo en <a href="https://repse.stps.gob.mx" target="_blank" rel="noopener" style="font-weight:700;text-decoration:underline">repse.stps.gob.mx</a> con tu RFC.</span>
+                </span>
+                <button onClick="{{ omitirRepse }}" style="align-self:center;padding:0;border:none;background:transparent;cursor:pointer;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:700;color:#2F80ED;transition:color 150ms ease-in-out" style-hover="color:#1E6FDB">Omitir por ahora</button>
+              </span>
+            </sc-if>
+
+            <sc-if value="{{ ocrCargando }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;flex-direction:column;gap:16px;align-items:center;padding:44px 24px;border:2px solid #BFDBFE;border-radius:12px;background:#F8FBFF">
+                <span style="position:relative;display:block;width:88px;height:112px;border-radius:8px;background:#ffffff;border:1px solid #E2E8F0;overflow:hidden;box-shadow:var(--shadow-sm)">
+                  <span style="position:absolute;left:14px;right:14px;top:18px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:30px;top:34px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:20px;top:50px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:38px;top:66px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:26px;top:82px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:0;right:0;height:2px;background:#2F80ED;box-shadow:0 0 10px 2px rgba(47,128,237,.5);animation:c10scan 1400ms ease-in-out infinite"></span>
+                </span>
+                <span style="font-size:16px;font-weight:700;color:#0F172A">Leyendo tu documento...</span>
+                <span style="position:relative;display:block;width:220px;height:6px;border-radius:9999px;background:#DBEAFE;overflow:hidden">
+                  <span style="position:absolute;top:0;bottom:0;width:32%;border-radius:9999px;background:#2F80ED;animation:c10barra 1100ms ease-in-out infinite"></span>
+                </span>
+              </span>
+            </sc-if>
+
+            <sc-if value="{{ ocrListo }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;flex-direction:column;gap:16px;animation:c10in 250ms ease-in-out">
+                <span style="display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:12px;background:#F0FDF4;border:1px solid #BBF7D0">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;background:#16A34A;color:#ffffff;flex-shrink:0">{{ iconoCheck }}</span>
+                  <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <span style="font-size:15px;font-weight:700;color:#0F172A">Datos extraídos</span>
+                    <span style="font-size:13px;line-height:1.5;color:#15803D;text-wrap:pretty">Verifica que la información sea correcta. Si algo no coincide, puedes editarlo.</span>
+                  </span>
+                </span>
+
+                <span style="display:flex;flex-direction:column;gap:20px">
+                  <span style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>Número de registro REPSE</span>
+                    <input type="text" value="{{ repse.folio }}" onChange="{{ setFolio }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-variant-numeric:tabular-nums;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                  </span>
+
+                  <span style="display:flex;flex-direction:column;gap:8px">
+                    <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8">Vigencia del registro</span>
+                    <span style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+                      <span style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                        <span style="font-size:13px;color:#64748B">Inicio de vigencia</span>
+                        <input type="text" value="{{ repse.inicio }}" onChange="{{ setInicio }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-variant-numeric:tabular-nums;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                      </span>
+                      <span style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                        <span style="font-size:13px;color:#64748B">Fin de vigencia</span>
+                        <input type="text" value="{{ repse.fin }}" onChange="{{ setFin }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-variant-numeric:tabular-nums;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                      </span>
+                    </span>
+                    <span style="display:inline-flex;align-self:flex-start;align-items:center;padding:2px 10px;border-radius:9999px;font-size:12px;font-weight:600;line-height:1.5;background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D">{{ repse.restante }}</span>
+                  </span>
+
+                  <sc-if value="{{ esMoral }}" hint-placeholder-val="{{ true }}">
+                    <span style="display:flex;flex-direction:column;gap:6px">
+                      <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>Razón social</span>
+                      <input type="text" value="{{ repse.razon }}" onChange="{{ setRazon }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                    </span>
+                  </sc-if>
+                  <sc-if value="{{ esFisica }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:flex;flex-direction:column;gap:8px">
+                      <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>Nombre completo</span>
+                      <span style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+                        <sc-for list="{{ nombreFisica }}" as="n" hint-placeholder-count="3">
+                          <span style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                            <span style="font-size:13px;color:#64748B">{{ n.k }}</span>
+                            <input type="text" value="{{ n.v }}" onChange="{{ n.cambiar }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                          </span>
+                        </sc-for>
+                      </span>
+                    </span>
+                  </sc-if>
+
+                  <span style="display:flex;flex-direction:column;gap:8px;padding-top:20px;border-top:1px solid #F1F5F9">
+                    <span style="display:flex;align-items:center;gap:10px">
+                      <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8">Actividades autorizadas ante la STPS</span>
+                      <span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:12px;font-weight:600;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;font-variant-numeric:tabular-nums">{{ totalActividades }}</span>
+                    </span>
+                    <span style="display:flex;flex-direction:column">
+                      <sc-for list="{{ actividades }}" as="a" hint-placeholder-count="6">
+                        <span style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F1F5F9">
+                          <span style="display:flex;flex-direction:column;gap:1px;min-width:0">
+                            <span style="font-size:14px;font-weight:600;color:#0F172A;text-wrap:pretty">{{ a.label }}</span>
+                            <span style="font-size:12px;color:#94A3B8;font-variant-numeric:tabular-nums">{{ a.clave }}</span>
+                          </span>
+                          <span style="margin-left:auto;color:#16A34A;flex-shrink:0">{{ iconoCheck }}</span>
+                        </span>
+                      </sc-for>
+                    </span>
+                  </span>
+                </span>
+
+                <span style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <span style="display:inline-flex;align-items:center;gap:8px">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:40px;border-radius:6px;background:#FEF2F2;border:1px solid #FECACA;color:#DC2626">{{ iconoPdf }}</span>
+                    <span style="font-size:13px;color:#475569">aviso_repse.pdf</span>
+                  </span>
+                  <a href="#" onClick="{{ noop }}" style="font-size:14px;font-weight:500">Ver documento</a>
+                  <a href="#" onClick="{{ reiniciarOcr }}" style="font-size:14px;font-weight:500">Cambiar archivo</a>
+                </span>
+              </span>
+            </sc-if>
+          </span>
+        </sc-if>
+
+        <sc-if value="{{ esPaso4 }}" hint-placeholder-val="{{ false }}">
+          <span style="display:flex;flex-direction:column;gap:20px;animation:c10in 250ms ease-in-out">
+
+            <sc-if value="{{ csfVacio }}" hint-placeholder-val="{{ true }}">
+              <span style="display:flex;flex-direction:column;gap:14px">
+                <button onClick="{{ simularCsf }}" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;padding:48px 24px;border:2px dashed #BFDBFE;border-radius:12px;background:#F8FBFF;cursor:pointer;font-family:Arial, Helvetica, sans-serif;transition:all 150ms ease-in-out" style-hover="border-color:#2F80ED;background:#EFF6FF">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:12px;background:#DBEAFE;color:#2F80ED;margin-bottom:4px">{{ iconoSubir }}</span>
+                  <span style="font-size:16px;font-weight:700;color:#0F172A;text-wrap:pretty">Arrastra tu constancia de situación fiscal aquí</span>
+                  <span style="font-size:14px;color:#475569">o haz clic para seleccionar archivo</span>
+                  <span style="font-size:12px;color:#94A3B8">PDF · Máximo 10 MB</span>
+                </button>
+                <span style="display:flex;gap:10px;padding:16px 18px;border-radius:12px;background:#EFF6FF;border:1px solid #BFDBFE">
+                  <span style="font-size:13px;line-height:1.55;color:#1E40AF;text-wrap:pretty"><span style="font-weight:700">Nota:</span> descarga tu constancia en <a href="https://www.sat.gob.mx" target="_blank" rel="noopener" style="font-weight:700;text-decoration:underline">sat.gob.mx</a> con tu RFC y contraseña. Si la omites, tendrás que capturar los datos a mano.</span>
+                </span>
+                <button onClick="{{ omitirCsf }}" style="align-self:center;padding:0;border:none;background:transparent;cursor:pointer;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:700;color:#2F80ED;transition:color 150ms ease-in-out" style-hover="color:#1E6FDB">Omitir por ahora</button>
+              </span>
+            </sc-if>
+
+            <sc-if value="{{ csfCargando }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;flex-direction:column;gap:16px;align-items:center;padding:44px 24px;border:2px solid #BFDBFE;border-radius:12px;background:#F8FBFF">
+                <span style="position:relative;display:block;width:88px;height:112px;border-radius:8px;background:#ffffff;border:1px solid #E2E8F0;overflow:hidden;box-shadow:var(--shadow-sm)">
+                  <span style="position:absolute;left:14px;right:14px;top:18px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:30px;top:34px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:20px;top:50px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:38px;top:66px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:14px;right:26px;top:82px;height:6px;border-radius:9999px;background:#E2E8F0"></span>
+                  <span style="position:absolute;left:0;right:0;height:2px;background:#2F80ED;box-shadow:0 0 10px 2px rgba(47,128,237,.5);animation:c10scan 1400ms ease-in-out infinite"></span>
+                </span>
+                <span style="font-size:16px;font-weight:700;color:#0F172A">Leyendo tu documento...</span>
+                <span style="position:relative;display:block;width:220px;height:6px;border-radius:9999px;background:#DBEAFE;overflow:hidden">
+                  <span style="position:absolute;top:0;bottom:0;width:32%;border-radius:9999px;background:#2F80ED;animation:c10barra 1100ms ease-in-out infinite"></span>
+                </span>
+              </span>
+            </sc-if>
+
+            <sc-if value="{{ csfListo }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;flex-direction:column;gap:16px;animation:c10in 250ms ease-in-out">
+                <span style="display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:12px;background:#F0FDF4;border:1px solid #BBF7D0">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;background:#16A34A;color:#ffffff;flex-shrink:0">{{ iconoCheck }}</span>
+                  <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <span style="font-size:15px;font-weight:700;color:#0F172A">Datos extraídos</span>
+                    <span style="font-size:13px;line-height:1.5;color:#15803D;text-wrap:pretty">Verifica que la información sea correcta. Si algo no coincide, puedes editarlo.</span>
+                  </span>
+                </span>
+
+                <span style="display:flex;flex-direction:column;gap:20px">
+                  <sc-for list="{{ camposCsf }}" as="f" hint-placeholder-count="3">
+                    <span style="display:flex;flex-direction:column;gap:6px">
+                      <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>{{ f.k }}</span>
+                      <input type="text" value="{{ f.v }}" onChange="{{ f.cambiar }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                    </span>
+                  </sc-for>
+                  <span style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8">Estatus en el padrón</span>
+                    <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:4px 12px;border-radius:9999px;font-size:13px;font-weight:600;white-space:nowrap;background:{{ padron.bg }};border:1px solid {{ padron.bd }};color:{{ padron.fg }}">
+                      <span style="width:7px;height:7px;border-radius:9999px;background:{{ padron.punto }}"></span>{{ padron.label }}
+                    </span>
+                  </span>
+                </span>
+
+                <span style="display:flex;flex-direction:column;gap:12px;padding-top:20px;border-top:1px solid #F1F5F9">
+                  <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8">Domicilio fiscal</span>
+                  <span style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                    <sc-for list="{{ camposDomicilio }}" as="f" hint-placeholder-count="11">
+                      <span style="display:flex;flex-direction:column;gap:5px;min-width:0;grid-column:{{ f.tramo }}">
+                        <span style="font-size:13px;color:#64748B">{{ f.k }}</span>
+                        <input type="text" value="{{ f.v }}" onChange="{{ f.cambiar }}" style="width:100%;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-variant-numeric:tabular-nums;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                      </span>
+                    </sc-for>
+                  </span>
+                </span>
+
+                <span style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <span style="display:inline-flex;align-items:center;gap:8px">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:40px;border-radius:6px;background:#FEF2F2;border:1px solid #FECACA;color:#DC2626">{{ iconoPdf }}</span>
+                    <span style="font-size:13px;color:#475569">constancia_situacion_fiscal.pdf</span>
+                  </span>
+                  <a href="#" onClick="{{ noop }}" style="font-size:14px;font-weight:500">Ver documento</a>
+                  <a href="#" onClick="{{ reiniciarCsf }}" style="font-size:14px;font-weight:500">Cambiar archivo</a>
+                </span>
+              </span>
+            </sc-if>
+          </span>
+        </sc-if>
+
+        <sc-if value="{{ esPaso5 }}" hint-placeholder-val="{{ false }}">
+          <span style="display:flex;flex-direction:column;gap:20px;animation:c10in 250ms ease-in-out">
+            <span style="display:{{ verConfirmacion }};align-items:flex-start;gap:12px;padding:16px 18px;border-radius:12px;background:#F0FDF4;border:1px solid #BBF7D0">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;background:#16A34A;color:#ffffff;flex-shrink:0">{{ iconoCheck }}</span>
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="font-size:15px;font-weight:700;color:#0F172A">Confirma tus datos</span>
+                <span style="font-size:13px;line-height:1.5;color:#15803D;text-wrap:pretty">Prellenamos razón social, RFC y domicilio fiscal con lo que leímos de tu constancia. Completa el resto para activar tu cuenta.</span>
+              </span>
+            </span>
+            <span style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px">
+              <sc-for list="{{ campos }}" as="c" hint-placeholder-count="4">
+                <span style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                  <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626;display:{{ c.verAst }}">* </span>{{ c.k }}</span>
+                  <input type="{{ c.tipo }}" value="{{ c.v }}" onChange="{{ c.cambiar }}" placeholder="{{ c.pista }}" maxLength="{{ c.max }}" style="width:100%;box-sizing:border-box;height:40px;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                  <span style="font-size:13px;text-wrap:pretty;display:{{ c.verAyuda }};color:#64748B">{{ c.ayuda }}</span>
+                </span>
+              </sc-for>
+
+              <span style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>Teléfono</span>
+                <span style="display:flex;gap:8px;align-items:stretch">
+                  <span style="display:inline-flex;align-items:center;box-sizing:border-box;height:40px;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;background:#F8FAFC;font-size:14px;color:#475569;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums">MX +52</span>
+                  <input type="text" value="{{ tel }}" onChange="{{ setTel }}" placeholder="Ej. 8112345678" maxLength="{{ diez }}" style="flex:1;min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-variant-numeric:tabular-nums;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                </span>
+              </span>
+
+              <span style="display:flex;flex-direction:column;gap:6px;min-width:0;grid-column:span 2">
+                <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626;display:{{ verAstDominio }}">* </span>{{ etiquetaDominio }}</span>
+                <span style="display:flex;align-items:stretch;gap:8px">
+                  <input type="text" value="{{ dominio }}" onChange="{{ setDominio }}" placeholder="constructoraperez" style="flex:1;min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;background:#ffffff;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                  <span style="display:inline-flex;align-items:center;box-sizing:border-box;height:40px;padding:0 14px;border:1px solid #E5E7EB;border-radius:8px;background:#F8FAFC;font-size:14px;color:#64748B;white-space:nowrap;flex-shrink:0">.clave10.com</span>
+                </span>
+                <span style="font-size:13px;color:#64748B;text-wrap:pretty;display:{{ verConfirmaDominio }}">Vas a entrar en <span style="font-weight:700;color:#0F172A">{{ dominioCompleto }}</span>. Lo confirmamos al crear tu cuenta.</span>
+              </span>
+
+              <span style="display:flex;flex-direction:column;gap:6px;min-width:0;grid-column:span 2">
+                <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>{{ etiquetaDireccion }}</span>
+                <input type="text" value="{{ direccion }}" onChange="{{ setDireccion }}" placeholder="{{ pistaDireccion }}" style="width:100%;box-sizing:border-box;height:40px;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+              </span>
+
+              <span style="display:flex;flex-direction:column;gap:6px;min-width:0;grid-column:span 2">
+                <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>Contraseña</span>
+                <span style="display:flex;gap:8px;align-items:stretch">
+                  <input type="{{ tipoPass1 }}" value="{{ pass1 }}" onChange="{{ setPass1 }}" placeholder="Contraseña" style="flex:1;min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                  <button onClick="{{ togglePass1 }}" title="{{ tituloPass1 }}" aria-label="{{ tituloPass1 }}" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid #E5E7EB;border-radius:8px;cursor:pointer;background:#ffffff;color:#94A3B8;flex-shrink:0;transition:all 150ms ease-in-out" style-hover="background:#F1F5F9;color:#475569">{{ iconoPass1 }}</button>
+                </span>
+                <span style="display:flex;flex-wrap:wrap;gap:6px 16px;padding-top:2px">
+                  <sc-for list="{{ reglas }}" as="r" hint-placeholder-count="4">
+                    <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:{{ r.color }}">{{ r.icon }}{{ r.label }}</span>
+                  </sc-for>
+                </span>
+              </span>
+
+              <span style="display:flex;flex-direction:column;gap:6px;min-width:0;grid-column:span 2">
+                <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8"><span style="color:#DC2626">* </span>Confirmar contraseña</span>
+                <span style="display:flex;gap:8px;align-items:stretch">
+                  <input type="{{ tipoPass2 }}" value="{{ pass2 }}" onChange="{{ setPass2 }}" placeholder="Repite tu contraseña" style="flex:1;min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border:1px solid #E5E7EB;border-radius:8px;font-family:Arial, Helvetica, sans-serif;font-size:14px;color:#171717;background:#ffffff;outline:none;transition:all 150ms ease-in-out" style-focus="border-color:#2F80ED;box-shadow:0 0 0 3px rgba(47,128,237,.15)">
+                  <button onClick="{{ togglePass2 }}" title="{{ tituloPass2 }}" aria-label="{{ tituloPass2 }}" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid #E5E7EB;border-radius:8px;cursor:pointer;background:#ffffff;color:#94A3B8;flex-shrink:0;transition:all 150ms ease-in-out" style-hover="background:#F1F5F9;color:#475569">{{ iconoPass2 }}</button>
+                </span>
+                <span style="font-size:13px;text-wrap:pretty;display:{{ verCoincide }};color:{{ colorCoincide }}">{{ textoCoincide }}</span>
+              </span>
+            </span>
+
+            <span style="display:flex;gap:10px;padding:16px 18px;border-radius:12px;background:#EFF6FF;border:1px solid #BFDBFE">
+              <span style="font-size:13px;line-height:1.55;color:#1E40AF;text-wrap:pretty"><span style="font-weight:700">Nota:</span> Tu correo será el usuario con el que inicies sesión. Podrás completar documentos, ubicaciones y empleados desde Mi empresa en cualquier momento.</span>
+            </span>
+
+            <span style="display:flex;align-items:flex-start;gap:10px">
+              <x-import component-from-global-scope="Clave10DesignSystem_b774bd.Checkbox" checked="{{ terminos }}" on-change="{{ alternarTerminos }}" hint-size="16px,16px"></x-import>
+              <span style="font-size:13px;color:#475569;text-wrap:pretty">Al registrarte aceptas los <a href="#" onClick="{{ noop }}" style="text-decoration:underline">Términos y Condiciones</a> y el <a href="#" onClick="{{ noop }}" style="text-decoration:underline">Aviso de Privacidad</a> de Clave 10</span>
+            </span>
+          </span>
+        </sc-if>
+
+        <span style="display:flex;align-items:center;gap:12px;padding-top:20px;border-top:1px solid #F1F5F9">
+          <button onClick="{{ atras }}" style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 4px;border:none;background:transparent;cursor:pointer;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:700;color:#475569;transition:color 150ms ease-in-out" style-hover="color:#0F172A">{{ iconoIzq }}Atrás</button>
+          <button onClick="{{ continuar }}" disabled="{{ bloqueado }}" style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 24px;border:none;border-radius:10px;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:700;transition:all 150ms ease-in-out;background:{{ fondoContinuar }};color:{{ colorContinuar }};cursor:{{ cursorContinuar }}" style-hover="background:{{ hoverContinuar }}">{{ textoContinuar }}{{ iconoDer }}</button>
+        </span>
+      </div>
+      <span style="align-self:center;font-size:14px;color:#475569">¿Ya tienes cuenta? <a href="#" onClick="{{ irLogin }}" style="font-weight:700">Inicia sesión aquí</a></span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ esExito }}" hint-placeholder-val="{{ false }}">
+    <div style="width:100%;max-width:520px;background:#ffffff;border:1px solid #E5E7EB;border-radius:16px;box-shadow:var(--shadow-lg);padding:32px;display:flex;flex-direction:column;gap:24px;animation:c10in 250ms ease-in-out">
+
+      <span style="display:flex;align-items:center;gap:16px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:#F0FDF4;border:1px solid #BBF7D0;color:#16A34A;flex-shrink:0;animation:c10pop 500ms ease-in-out">{{ iconoExito }}</span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <span style="font-size:22px;font-weight:700;color:#0F172A;letter-spacing:-.02em;text-wrap:pretty">¡Bienvenido a Clave 10!</span>
+          <span style="font-size:14px;color:#64748B;text-wrap:pretty">Se creó tu cuenta y tu perfil quedó activo.</span>
+        </span>
+      </span>
+
+      <span style="display:flex;flex-direction:column;gap:14px;padding:20px;border-radius:12px;background:#EFF6FF;border:1px solid #BFDBFE">
+        <sc-for list="{{ resumen }}" as="r" hint-placeholder-count="3">
+          <span style="display:flex;align-items:baseline;gap:16px;min-width:0">
+            <span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#2F80ED;width:130px;flex-shrink:0">{{ r.k }}</span>
+            <span style="font-size:14px;font-weight:600;color:#0F172A;font-variant-numeric:tabular-nums;text-wrap:pretty;min-width:0">{{ r.v }}</span>
+          </span>
+        </sc-for>
+      </span>
+
+      <span style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:12px;background:#F8FAFC;border:1px solid #E2E8F0">
+        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+          <span style="font-size:14px;font-weight:700;color:#0F172A">Completitud del perfil</span>
+          <span style="font-size:14px;font-weight:700;color:#2F80ED;font-variant-numeric:tabular-nums">25 %</span>
+        </span>
+        <x-import component-from-global-scope="Clave10DesignSystem_b774bd.Progress" value="{{ completitud }}" height="{{ ocho }}" tone="brand" hint-size="100%,8px"></x-import>
+        <span style="font-size:13px;line-height:1.55;color:#64748B;text-wrap:pretty">Completa la información de tu empresa para poder operar con clientes y contratistas.</span>
+      </span>
+
+      <span style="display:flex;align-items:center;gap:12px;padding-top:20px;border-top:1px solid #F1F5F9">
+        <a href="Dashboard.dc.html" style="font-size:14px;font-weight:700">Explorar el dashboard</a>
+        <button onClick="{{ irEmpresa }}" style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 24px;border:none;border-radius:10px;cursor:pointer;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:700;background:#2F80ED;color:#ffffff;transition:background 150ms ease-in-out" style-hover="background:#1E6FDB">Ir a Mi empresa{{ iconoDer }}</button>
+      </span>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;pantallaInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;paso1&quot;,&quot;paso2&quot;,&quot;paso3&quot;,&quot;paso4&quot;,&quot;exito&quot;],&quot;default&quot;:&quot;login&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Comportamiento&quot;}}">
+const ico = (paths, size) => React.createElement("svg", {
+  xmlns: "http://www.w3.org/2000/svg", width: size || 16, height: size || 16, viewBox: "0 0 24 24",
+  fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round", strokeLinejoin: "round",
+  style: { flexShrink: 0 }, dangerouslySetInnerHTML: { __html: paths }
+});
+const P = {
+  ojo: '<path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/>',
+  ojoCerrado: '<path d="M10.73 5.08A10.4 10.4 0 0 1 12 5c4.5 0 8.2 2.7 9.94 6.65a1 1 0 0 1 0 .7 11.3 11.3 0 0 1-1.6 2.72"/><path d="M6.6 6.6A11.4 11.4 0 0 0 2.06 11.65a1 1 0 0 0 0 .7C3.8 16.3 7.5 19 12 19c1.9 0 3.6-.48 5.1-1.3"/><path d="m2 2 20 20"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  circulo: '<circle cx="12" cy="12" r="9"/>',
+  persona: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  edificio: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/>',
+  grupo: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  camion: '<path d="M14 18V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h2"/><path d="M14 9h4l4 4v4a1 1 0 0 1-1 1h-1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+  subir: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 9l5-5 5 5"/><path d="M12 4v12"/>',
+  pdf: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 13h6M9 17h4"/>',
+  escudo: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  llave: '<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L18.9 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
+  izq: '<path d="m15 18-6-6 6-6"/>',
+  der: '<path d="m9 18 6-6-6-6"/>'
+};
+
+const ACTIVIDADES = [
+  { label: "Mantenimiento industrial", clave: "3339" },
+  { label: "Instalaciones eléctricas", clave: "2382" },
+  { label: "Soldadura especializada", clave: "3323" },
+  { label: "Obra civil complementaria", clave: "2379" },
+  { label: "Seguridad industrial", clave: "5616" },
+  { label: "Transporte y maniobras", clave: "4841" }
+];
+
+const PERFILES = [
+  { v: "cliente", label: "Cliente", icono: P.persona },
+  { v: "contratista", label: "Contratista", icono: P.edificio },
+  { v: "visitante", label: "Visitante", icono: P.grupo },
+  { v: "transportista", label: "Transportista", icono: P.camion }
+];
+
+const PERSONAS = [
+  { v: "moral", label: "Persona moral", icono: P.edificio, detalle: "Empresa constituida ante notario con acta constitutiva y objeto social." },
+  { v: "fisica", label: "Persona física", icono: P.persona, detalle: "Persona que presta servicios especializados de forma independiente." }
+];
+
+const PASOS = [
+  { v: "paso1", label: "Tipo de perfil", titulo: "Crea tu perfil", sub: "Elige el tipo de perfil con el que operarás en Clave 10.", icono: P.persona },
+  { v: "paso2", label: "Tipo de persona", titulo: "Tipo de persona", sub: "Define tu figura fiscal para pedirte solo los datos que aplican.", icono: P.edificio },
+  { v: "paso3", label: "Registro REPSE", titulo: "Registro REPSE", sub: "Extraeremos automáticamente tus datos del documento. Solo necesitarás verificarlos.", icono: P.escudo },
+  { v: "paso4", label: "Situación fiscal", titulo: "Constancia de situación fiscal", sub: "De este documento obtenemos tu razón social, RFC y domicilio fiscal.", icono: P.pdf },
+  { v: "paso5", label: "Crea tu cuenta", titulo: "Datos de tu cuenta", sub: "Información mínima para activar tu perfil. Podrás completar el resto después.", icono: P.llave }
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      vista: props.pantallaInicial || "login",
+      usuario: "", pass: "", verPass: false,
+      perfil: "", persona: "",
+      ocr: "vacio",
+      folio: "AGN-2841/2024", inicio: "28/12/2024", fin: "28/12/2027",
+      razon: "Grupo Insa Servicios Industriales, S.A. de C.V.",
+      nombres: "Carlos", ap1: "Mendoza", ap2: "Torres",
+      cuenta: { razon: "", rfc: "", curp: "", rep: "", dominio: "", direccion: "", correo: "", tel: "", pass: "", pass2: "" },
+      csf: "vacio",
+      omitioRepse: false,
+      omitioCsf: false,
+      fiscal: {
+        razon: "", rfc: "", correo: "", estatus: "Activo",
+        cp: "", tipoVialidad: "", vialidad: "", exterior: "", interior: "",
+        colonia: "", localidad: "", municipio: "", estado: "", entreCalle: "", yCalle: ""
+      },
+      verPass3: false, verPass4: false,
+      terminos: false
+    };
+  }
+
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  set(campo) {
+    return (e) => {
+      const v = e.target.value;
+      this.setState((s) => ({ cuenta: Object.assign({}, s.cuenta, { [campo]: v }) }));
+    };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const moral = st.persona === "moral";
+    const paso = PASOS.map((p) => p.v).indexOf(st.vista) + 1;
+    const actual = PASOS[paso - 1];
+    const c = st.cuenta;
+
+    const reglas = [
+      { label: "Mínimo 8 caracteres", ok: c.pass.length >= 8 },
+      { label: "Una mayúscula", ok: /[A-ZÁÉÍÓÚÑ]/.test(c.pass) },
+      { label: "Un número", ok: /\d/.test(c.pass) },
+      { label: "Un carácter especial", ok: /[^\w\sÁÉÍÓÚÑáéíóúñ]/.test(c.pass) }
+    ];
+    const passOk = reglas.every((r) => r.ok);
+    const coincide = c.pass2.length > 0 && c.pass === c.pass2;
+    const largoRfc = moral ? 12 : 13;
+    const obligatorios = moral
+      ? c.razon.trim() && c.rfc.length === largoRfc && c.rep.trim() && c.dominio.trim() && c.correo.trim() && c.tel.trim() && c.direccion.trim()
+      : c.razon.trim() && c.rfc.length === largoRfc && c.curp.length === 18 && c.correo.trim() && c.tel.trim() && c.direccion.trim();
+    const puedeCrear = !!obligatorios && passOk && coincide && st.terminos;
+
+    const listo = paso === 1 ? !!st.perfil
+      : paso === 2 ? !!st.persona
+      : paso === 3 ? st.ocr === "listo" || st.omitioRepse
+      : paso === 4 ? st.csf === "listo" || st.omitioCsf
+      : puedeCrear;
+
+    const campoTxt = (k, campo, pista, opciones) => {
+      const o = opciones || {};
+      return {
+        k: k, v: c[campo], tipo: o.tipo || "text", pista: pista, max: o.max || 200,
+        verAst: o.opcional ? "none" : "inline",
+        cambiar: this.set(campo),
+        ayuda: o.ayuda || "", verAyuda: o.ayuda ? "block" : "none"
+      };
+    };
+
+    const campos = moral
+      ? [
+          campoTxt("Razón social", "razon", "Ej. Grupo Insa Servicios Industriales, S.A. de C.V."),
+          campoTxt("RFC", "rfc", "Ej. GIS180415QX3", { max: 12, ayuda: "12 caracteres para persona moral" }),
+          campoTxt("Nombre del representante legal", "rep", "Ej. Eduardo Delgado Ríos"),
+          campoTxt("Correo electrónico", "correo", "Ej. contacto@empresa.com", { tipo: "email", ayuda: "Este será tu usuario para iniciar sesión." })
+        ]
+      : [
+          campoTxt("Nombre completo", "razon", "Ej. Carlos Alberto Mendoza Torres"),
+          campoTxt("RFC", "rfc", "Ej. METC850215AB3", { max: 13, ayuda: "13 caracteres para persona física" }),
+          campoTxt("CURP", "curp", "Ej. METC850215HNLRRS09", { max: 18 }),
+          campoTxt("Correo electrónico", "correo", "Ej. contacto@empresa.com", { tipo: "email", ayuda: "Este será tu usuario para iniciar sesión." })
+        ];
+
+    const opcion = (o, sel, setter) => ({
+      label: o.label, detalle: o.detalle || "",
+      icon: ico(o.icono, 22),
+      borde: sel ? "#2F80ED" : "#E5E7EB",
+      fondo: sel ? "#F8FBFF" : "#ffffff",
+      tinte: sel ? "#DBEAFE" : "#F1F5F9",
+      acento: sel ? "#2F80ED" : "#64748B",
+      color: sel ? "#0F172A" : "#171717",
+      peso: sel ? 700 : 400,
+      elegir: setter
+    });
+
+    return {
+      esLogin: st.vista === "login",
+      esWizard: paso > 0,
+      esExito: st.vista === "exito",
+      anchoWizard: paso === 5 ? "660px" : "560px",
+
+      /* login */
+      usuario: st.usuario, pass: st.pass,
+      setUsuario: (e) => this.setState({ usuario: e.target.value }),
+      setPass: (e) => this.setState({ pass: e.target.value }),
+      tipoPass: st.verPass ? "text" : "password",
+      iconoPass: ico(st.verPass ? P.ojoCerrado : P.ojo, 18),
+      tituloPass: st.verPass ? "Ocultar contraseña" : "Mostrar contraseña",
+      verPass: () => this.setState({ verPass: !st.verPass }),
+      entrar: () => { window.location.href = "Mi empresa.dc.html"; },
+      irPaso1: (e) => { e.preventDefault(); this.setState({ vista: "paso1" }); },
+      irLogin: (e) => { e.preventDefault(); this.setState({ vista: "login" }); },
+      noop: (e) => e.preventDefault(),
+
+      /* indicador lineal y encabezado del paso */
+      tramos: PASOS.map((p, i) => ({
+        label: p.label,
+        color: i + 1 === paso ? "#2F80ED" : i + 1 < paso ? "#BFDBFE" : "#E2E8F0"
+      })),
+      tituloPaso: actual ? actual.titulo : "",
+      subtituloPaso: actual ? actual.sub : "",
+      verSubtitulo: actual && actual.sub ? "block" : "none",
+      iconoPaso: ico(actual ? actual.icono : P.persona, 22),
+
+      /* paso 1 · tipo de perfil */
+      esPaso1: paso === 1,
+      perfiles: PERFILES.map((o) => opcion(o, st.perfil === o.v, () => this.setState({ perfil: o.v }))),
+
+      /* paso 2 · tipo de persona */
+      esPaso2: paso === 2,
+      personas: PERSONAS.map((o) => opcion(o, st.persona === o.v, () => this.setState({ persona: o.v }))),
+
+      /* paso 3 · REPSE */
+      esPaso3: paso === 3,
+      omitirRepse: () => this.setState({ omitioRepse: true, vista: "paso4", csf: "vacio" }),
+      ocrVacio: st.ocr === "vacio",
+      ocrCargando: st.ocr === "cargando",
+      ocrListo: st.ocr === "listo",
+      simular: () => {
+        this.setState({ ocr: "cargando" });
+        clearTimeout(this._t);
+        this._t = setTimeout(() => this.setState({
+          ocr: "listo",
+          cuenta: Object.assign({}, this.state.cuenta, {
+            rfc: this.state.persona === "fisica" ? "METC850215AB3" : "GIS180415QX3",
+            rep: this.state.persona === "fisica" ? "" : "Eduardo Delgado Ríos"
+          })
+        }), 1900);
+      },
+      reiniciarOcr: (e) => { e.preventDefault(); this.setState({ ocr: "vacio" }); },
+      repse: { folio: st.folio, inicio: st.inicio, fin: st.fin, razon: st.razon, restante: "17 meses restantes" },
+      setFolio: (e) => this.setState({ folio: e.target.value }),
+      setInicio: (e) => this.setState({ inicio: e.target.value }),
+      setFin: (e) => this.setState({ fin: e.target.value }),
+      setRazon: (e) => this.setState({ razon: e.target.value }),
+      esMoral: moral, esFisica: st.persona === "fisica",
+      nombreFisica: [
+        { k: "Nombre(s)", v: st.nombres, cambiar: (e) => this.setState({ nombres: e.target.value }) },
+        { k: "Primer apellido", v: st.ap1, cambiar: (e) => this.setState({ ap1: e.target.value }) },
+        { k: "Segundo apellido", v: st.ap2, cambiar: (e) => this.setState({ ap2: e.target.value }) }
+      ],
+      actividades: ACTIVIDADES,
+      totalActividades: ACTIVIDADES.length,
+      iconoSubir: ico(P.subir, 26),
+      iconoCheck: ico(P.check, 16),
+      iconoPdf: ico(P.pdf, 16),
+
+      /* paso 4 · constancia de situación fiscal */
+      esPaso4: paso === 4,
+      csfVacio: st.csf === "vacio",
+      csfCargando: st.csf === "cargando",
+      csfListo: st.csf === "listo",
+      simularCsf: () => {
+        this.setState({ csf: "cargando" });
+        clearTimeout(this._csfT);
+        this._csfT = setTimeout(() => this.setState({
+          csf: "listo",
+          omitioCsf: false,
+          fiscal: moral
+            ? {
+                razon: "Grupo Insa Servicios Industriales, S.A. de C.V.",
+                rfc: "GIS180415QX3",
+                correo: "contacto@grupoinsa.mx",
+                estatus: "Activo",
+                cp: "64610", tipoVialidad: "Boulevard", vialidad: "Fundadores",
+                exterior: "1200", interior: "Piso 4", colonia: "Cumbres",
+                localidad: "Monterrey", municipio: "Monterrey", estado: "Nuevo León",
+                entreCalle: "Av. Paseo de los Leones", yCalle: "Calle Cordillera"
+              }
+            : {
+                razon: "Carlos Alberto Mendoza Torres",
+                rfc: "METC850215AB3",
+                correo: "carlos.mendoza.elec@gmail.com",
+                estatus: "Activo",
+                cp: "64000", tipoVialidad: "Avenida", vialidad: "Revolución",
+                exterior: "450", interior: "", colonia: "Centro",
+                localidad: "Monterrey", municipio: "Monterrey", estado: "Nuevo León",
+                entreCalle: "Calle Padre Mier", yCalle: "Calle Matamoros"
+              }
+        }), 1900);
+      },
+      omitirCsf: () => this.setState({ omitioCsf: true, vista: "paso5" }),
+      reiniciarCsf: (e) => { e.preventDefault(); this.setState({ csf: "vacio" }); },
+      camposCsf: [
+        { k: moral ? "Razón social" : "Nombre completo", campo: "razon" },
+        { k: "RFC", campo: "rfc" },
+        { k: "Correo electrónico", campo: "correo" }
+      ].map((f) => ({
+        k: f.k, v: st.fiscal[f.campo],
+        cambiar: (e) => this.setState({ fiscal: Object.assign({}, st.fiscal, { [f.campo]: e.target.value }) })
+      })),
+      padron: (function (activo) {
+        return {
+          label: activo ? "Activo" : "Inactivo",
+          bg: activo ? "#F0FDF4" : "#F8FAFC",
+          bd: activo ? "#BBF7D0" : "#E2E8F0",
+          fg: activo ? "#15803D" : "#475569",
+          punto: activo ? "#16A34A" : "#94A3B8"
+        };
+      })(st.fiscal.estatus === "Activo"),
+      camposDomicilio: [
+        { k: "Código postal", campo: "cp" },
+        { k: "Tipo de vialidad", campo: "tipoVialidad" },
+        { k: "Nombre de vialidad", campo: "vialidad", ancho: true },
+        { k: "Número exterior", campo: "exterior" },
+        { k: "Número interior", campo: "interior" },
+        { k: "Nombre de la colonia", campo: "colonia" },
+        { k: "Nombre de la localidad", campo: "localidad" },
+        { k: "Nombre del municipio o delegación", campo: "municipio" },
+        { k: "Nombre del estado o Distrito Federal", campo: "estado" },
+        { k: "Entre calle", campo: "entreCalle" },
+        { k: "Y calle", campo: "yCalle" }
+      ].map((f) => ({
+        k: f.k, v: st.fiscal[f.campo] || "",
+        tramo: f.ancho ? "span 2" : "span 1",
+        cambiar: (e) => this.setState({ fiscal: Object.assign({}, st.fiscal, { [f.campo]: e.target.value }) })
+      })),
+
+      /* paso 5 · cuenta */
+      esPaso5: paso === 5,
+      verConfirmacion: st.csf === "listo" ? "flex" : "none",
+      campos: campos,
+      diez: 10, ocho: 8, completitud: 25,
+      tel: c.tel, setTel: this.set("tel"),
+      direccion: c.direccion, setDireccion: this.set("direccion"),
+      etiquetaDireccion: moral ? "Dirección de la empresa" : "Dirección",
+      dominio: c.dominio,
+      setDominio: (e) => {
+        const v = e.target.value.toLowerCase()
+          .replace(/ñ/g, "n")
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[\s_]+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-{2,}/g, "-");
+        this.setState((s) => ({ cuenta: Object.assign({}, s.cuenta, { dominio: v }) }));
+      },
+      etiquetaDominio: moral ? "Dominio de tu empresa" : "Dominio de tu perfil",
+      verAstDominio: moral ? "inline" : "none",
+      verConfirmaDominio: c.dominio.trim() ? "block" : "none",
+      dominioCompleto: c.dominio.trim() + ".clave10.com",
+      pistaDireccion: moral ? "Ej. Blvd. Fundadores 1200, Col. Cumbres, Monterrey, N.L." : "Ej. Av. Revolución 450, Col. Centro, Monterrey, N.L.",
+      pass1: c.pass, setPass1: this.set("pass"),
+      pass2: c.pass2, setPass2: this.set("pass2"),
+      tipoPass1: st.verPass3 ? "text" : "password",
+      tipoPass2: st.verPass4 ? "text" : "password",
+      iconoPass1: ico(st.verPass3 ? P.ojoCerrado : P.ojo, 16),
+      iconoPass2: ico(st.verPass4 ? P.ojoCerrado : P.ojo, 16),
+      tituloPass1: st.verPass3 ? "Ocultar contraseña" : "Mostrar contraseña",
+      tituloPass2: st.verPass4 ? "Ocultar contraseña" : "Mostrar contraseña",
+      togglePass1: () => this.setState({ verPass3: !st.verPass3 }),
+      togglePass2: () => this.setState({ verPass4: !st.verPass4 }),
+      verCoincide: c.pass2.length === 0 ? "none" : "block",
+      colorCoincide: coincide ? "#15803D" : "#B91C1C",
+      textoCoincide: coincide ? "Las contraseñas coinciden" : "Las contraseñas no coinciden",
+      reglas: reglas.map((r) => ({
+        label: r.label,
+        color: r.ok ? "#15803D" : "#94A3B8",
+        icon: ico(r.ok ? P.check : P.circulo, 13)
+      })),
+      terminos: st.terminos,
+      alternarTerminos: (v) => this.setState({ terminos: !!v }),
+
+      /* navegación del wizard */
+      iconoIzq: ico(P.izq, 16),
+      iconoDer: ico(P.der, 16),
+      atras: () => {
+        if (paso <= 1) this.setState({ vista: "login" });
+        else this.setState({ vista: PASOS[paso - 2].v });
+      },
+      textoContinuar: paso === 5 ? "Crear cuenta" : "Continuar",
+      bloqueado: !listo,
+      fondoContinuar: listo ? "#2F80ED" : "#F1F5F9",
+      colorContinuar: listo ? "#ffffff" : "#94A3B8",
+      hoverContinuar: listo ? "#1E6FDB" : "#F1F5F9",
+      cursorContinuar: listo ? "pointer" : "not-allowed",
+      continuar: () => {
+        if (!listo) return;
+        if (paso === 5) { this.setState({ vista: "exito" }); return; }
+        const extra = { vista: PASOS[paso].v };
+        if (PASOS[paso].v === "paso3") extra.ocr = "vacio";
+        if (PASOS[paso].v === "paso4") extra.csf = "vacio";
+        if (PASOS[paso].v === "paso5" && st.csf === "listo") {
+          const f = st.fiscal;
+          const dom = [
+            [f.tipoVialidad, f.vialidad].filter(Boolean).join(" "),
+            f.exterior ? "No. " + f.exterior : "",
+            f.interior,
+            f.colonia ? "Col. " + f.colonia : "",
+            f.cp ? "C.P. " + f.cp : "",
+            f.municipio, f.estado
+          ].filter(Boolean).join(", ");
+          const correoCsf = f.correo || c.correo;
+          const dominioCsf = (correoCsf.split("@")[1] || "").split(".")[0];
+          extra.cuenta = Object.assign({}, c, {
+            razon: f.razon || c.razon,
+            rfc: f.rfc || c.rfc,
+            correo: correoCsf,
+            dominio: c.dominio || dominioCsf,
+            direccion: dom || c.direccion
+          });
+        }
+        this.setState(extra);
+      },
+
+      /* éxito */
+      iconoExito: ico(P.check, 30),
+      resumen: [
+        { k: moral ? "Razón social" : "Nombre", v: c.razon || st.fiscal.razon || (moral ? st.razon : [st.nombres, st.ap1, st.ap2].filter(Boolean).join(" ")) },
+        { k: "Número REPSE", v: st.omitioRepse ? "Pendiente" : st.folio },
+        { k: "Correo registrado", v: c.correo || "contacto@grupoinsa.mx" }
+      ],
+      irEmpresa: () => { window.location.href = "Mi empresa.dc.html"; }
+    };
+  }
+}
+</script>
+</body>
+</html>

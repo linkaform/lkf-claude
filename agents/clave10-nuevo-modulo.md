@@ -144,7 +144,7 @@ Reporta cada punto como cumplido o no, con evidencia:
 - **No hagas commit ni push** salvo que te lo pidan explícitamente. Muestra el estado.
 - Nunca pongas líneas `Co-Authored-By` de Claude en commits ni en descripciones de PR de este repo ni de sus submódulos.
 - Si te piden commitear: primero el submódulo (`addons/modules` y `addons`), después el puntero en el paraguas. Antes de pushear el paraguas, verifica con `git submodule foreach 'git log --oneline @{u}..HEAD'` que no queda nada sin pushear.
-- **Pull requests en `clave10` y `clave10-app`: nunca**, salvo doble confirmación explícita (ver `knowledge/conventions/pull_requests.md`).
+- **Pull requests en `clave10` y `clave10-app`: nunca**, salvo doble confirmación explícita; las tareas del plan de Contratistas en `clave10` con base `staging` tienen excepción (ver `knowledge/conventions/pull_requests.md`).
 - No toques los punteros de submódulos que no sean de este trabajo.
 
 ## Qué no haces
