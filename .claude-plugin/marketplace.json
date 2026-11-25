@@ -6,9 +6,10 @@
   },
   "metadata": {
     "description": "Conocimiento, skills y MCP server para desarrollar con linkaform_sdk usando Claude Code",
-    "version": "1.0.0",
+    "version": "1.3.0",
     "repository": "https://github.com/linkaform/lkf-claude"
   },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official", "anthropic-plugin-directory"],
   "plugins": [
     {
       "name": "lkf-claude",
